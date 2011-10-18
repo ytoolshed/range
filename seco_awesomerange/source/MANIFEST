@@ -1,0 +1,10 @@
+AwesomeRange.xs
+Changes
+Makefile.PL
+MANIFEST
+ppport.h
+README
+t/Seco-AwesomeRange.t
+fallback/const-c.inc
+fallback/const-xs.inc
+lib/Seco/AwesomeRange.pm

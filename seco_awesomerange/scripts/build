@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Perl wants to rewrite these files.
+pwd | grep '/tmp/' && chmod  u+w const-*.inc
+exec /usr/share/multipkg/scripts/build

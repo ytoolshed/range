@@ -1,0 +1,6 @@
+#!/bin/sh
+
+rm -rf ../BUILD
+export PATH="/home/y/bin:$PATH"
+DESTDIR=$PWD/../BUILD CFLAGS=" -DYAHOO_SOURCE " ../scripts/build
+

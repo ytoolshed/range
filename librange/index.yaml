@@ -1,0 +1,11 @@
+---
+deb:
+  requires:
+    - libpcre4
+default:
+  name: librange
+  summary: C library for range operations
+  version: '1.1.0'
+x86_64:
+ nobuild: 1
+ preferarch: i386

@@ -1,0 +1,29 @@
+Seco-Data-Range version 1.00
+============================
+
+OO Interface to a ranged instance. The default ranged server is
+'boothost' unless the machine has a /service/ranged entry, in which
+case 'localhost' is used.
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+DEPENDENCIES
+
+This module requires perl v5.6 or later.
+
+AUTHOR
+
+Daniel Muino
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2006 Yahoo! Inc.
+
+

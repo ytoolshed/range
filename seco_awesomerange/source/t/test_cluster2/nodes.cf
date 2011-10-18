@@ -1,0 +1,25 @@
+LINUX
+	INCLUDE kp2000
+	INCLUDE vsp2021
+
+ALL
+        INCLUDE $LINUX
+
+############# Currernt Front End Nodes
+FE
+        INCLUDE $ALL
+
+############# Nodes that billing should collect logs from
+############# (Syncing is only HOURLY - if needed, quickly p4 sync on
+############# ka1001, aka proxylogs1's admin)
+BILLING
+	INCLUDE $ALL
+	EXCLUDE kp2000
+
+############# Nodes that are currently considered stable
+STABLE
+        INCLUDE $ALL
+
+CLUSTER
+        INCLUDE $STABLE
+

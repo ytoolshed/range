@@ -1,0 +1,17 @@
+#!/bin/sh
+
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
+
+apxs -c mod_range.c -lcrange
+
+platform=`uname -i`
+if [ $platform = i386 ]; then
+    dir=/usr/lib/httpd/modules
+else
+    dir=/usr/lib64/httpd/modules
+fi
+
+mkdir -p $DESTDIR/$dir
+install -o root -g root -m 0755 .libs/mod_range.so $DESTDIR/$dir
+
+

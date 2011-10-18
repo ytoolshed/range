@@ -1,0 +1,9 @@
+---
+default:
+  name: mod_range
+  requires:
+    - libcrange
+    - httpd
+    - lwes-local
+  summary: mod_range - apache module for range
+  version: '1.1.0'

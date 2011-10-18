@@ -1,0 +1,12 @@
+#!/bin/sh
+
+$PERL Makefile.PL && make && make test && make install DESTDIR=$DESTDIR || exit 1
+
+find $DESTDIR -name perllocal.pod -type f -exec rm \{\} \;
+
+# create README file from POD doc
+pod2text lib/Seco/Data/Range.pm >README
+# XXX: work around missing perldispatch in /usr/local
+if [ $? -ne 0 ]; then
+    pod2text-5.8 lib/Seco/Data/Range.pm >README || exit 1
+fi
