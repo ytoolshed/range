@@ -22,6 +22,7 @@
 
 [ \t] /* ignore */;
 \n return tEOL;
+".." return tDIFF;
 
 \/ {
   yy_push_state(regex, yyscanner);
@@ -68,7 +69,6 @@ q\( {
   return tNONRANGE_LITERAL;
 }
 
-
 \' {
   yy_push_state(singlequote, yyscanner);
   yyextra->string_buf_ptr = yyextra->string_buf;
@@ -111,8 +111,6 @@ q\( {
   return tNONRANGE_LITERAL;
 }
 
-
-
 [a-zA-Z0-9_\.:][a-zA-Z0-9_\.:\-]+ {
    rangeparts* r;
    if((r = rangeparts_from_hostname(yyextra->rr, yytext)))
@@ -143,7 +141,6 @@ q\( {
 "*" return tGET_CLUSTER;
 "!" return tNOT;
 "?" return tGET_GROUP;
-".." return tDIFF;
 ";" return tSEMI;
 
 %%
