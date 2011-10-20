@@ -22,7 +22,6 @@
 
 [ \t] /* ignore */;
 \n return tEOL;
-".." return tDIFF;
 
 \/ {
   yy_push_state(regex, yyscanner);
@@ -128,6 +127,7 @@ q\( {
    return tLITERAL;
 }
 
+"-" return tDIFF;
 "&" return tINTER;
 "," return tUNION;
 "(" return tLPAREN;
