@@ -19,6 +19,7 @@ AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
 AC_PROG_LIBTOOL
+AM_PROG_CC_C_O
 
 perl_default="/usr/bin/perl"
 AC_ARG_ENABLE([perl], AC_HELP_STRING([--enable-perl=PERL],

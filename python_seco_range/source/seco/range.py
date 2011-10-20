@@ -16,9 +16,13 @@ class Range(object):
     def __init__(self, host):
         self.host = host
 
-    def expand(self, expr):
-        url = 'http://%s/range/list?%s' % (self.host,
-                                           urllib2.quote(expr))
+    def expand(self, expr, list=True):
+        if list:
+            url = 'http://%s/range/list?%s' % (self.host,
+                                               urllib2.quote(expr))
+        else:
+            url = 'http://%s/range/expand?%s' % (self.host,
+                                                 urllib2.quote(expr))
         req = urllib2.urlopen(url)
         code = req.getcode()
         if code != 200:
@@ -28,10 +32,13 @@ class Range(object):
         exception = reqinfo.getheader('RangeException')
         if exception:
             raise RangeException(exception)
-        expansion = []
-        for line in req.readlines():
-            expansion.append(line.rstrip())
-        return expansion
+        if list:
+            expansion = []
+            for line in req.readlines():
+                expansion.append(line.rstrip())
+            return expansion
+        else:
+            return req.read()
 
 if __name__ == '__main__':
     try:
