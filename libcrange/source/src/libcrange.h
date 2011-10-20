@@ -17,7 +17,7 @@ extern "C"
 
 #define LIBCRANGE_CONF "/etc/libcrange.conf"
 #define DEFAULT_SQLITE_DB "/var/libcrange/secodata.dat"
-#define LIBCRANGE_FUNCDIR "/usr/lib/libcrange"
+//#define LIBCRANGE_FUNCDIR "/usr/lib/libcrange"
 
 struct libcrange;
 typedef struct libcrange libcrange;

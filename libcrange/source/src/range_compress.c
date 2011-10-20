@@ -37,7 +37,7 @@ static const char* ignore_common_prefix(apr_pool_t* pool, int n1, int n2)
 
 static const char* fmt_group(apr_pool_t* pool, node_parts_int* parts, int count)
 {
-    return apr_psprintf(pool, "%s%s-%s%s", parts->prefix, parts->num_str,
+    return apr_psprintf(pool, "%s%s..%s%s", parts->prefix, parts->num_str,
                         ignore_common_prefix(pool, parts->num, parts->num + count),
             parts->domain);
 }

@@ -10,7 +10,7 @@
 #include "libcrange.h"
 #include "range.h"
 
-static const char* nodescf_path = "/home/seco/tools/conf";
+static const char* nodescf_path = "/etc/range"
 
 const char** functions_provided(libcrange* lr)
 {

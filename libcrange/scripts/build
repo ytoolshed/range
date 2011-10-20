@@ -5,7 +5,7 @@ set -x
 
 aclocal || exit 1
 libtoolize --force || exit 1
-automake-1.9 -a || exit 1
+automake -a || exit 1
 autoconf || exit 1
 ./configure || exit 1
 make || exit 1

@@ -20,7 +20,7 @@ AC_PROG_MAKE_SET
 AC_PROG_RANLIB
 AC_PROG_LIBTOOL
 
-perl_default="/usr/local/bin/perl"
+perl_default="/usr/bin/perl"
 AC_ARG_ENABLE([perl], AC_HELP_STRING([--enable-perl=PERL],
                       [Use this perl binary to build libcrange's perl
                        functionality.

@@ -130,8 +130,6 @@ q\( {
    return tLITERAL;
 }
 
-",-" return tDIFF;
-",&" return tINTER;
 "&" return tINTER;
 "," return tUNION;
 "(" return tLPAREN;
@@ -145,7 +143,7 @@ q\( {
 "*" return tGET_CLUSTER;
 "!" return tNOT;
 "?" return tGET_GROUP;
-"-" return tDIFF;
+".." return tDIFF;
 ";" return tSEMI;
 
 %%

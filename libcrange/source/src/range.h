@@ -18,7 +18,7 @@ Copyrights licensed under the New BSD License. See the accompanying LICENSE file
     /* an optional domain */                                            \
     "(\\.[-A-Za-z\\d.]*[-A-Za-z]+[-A-Za-z\\d.]*)?"                      \
     /* our range indicator: warn when using the deprecated - */         \
-    "(-|\\.\\.)"                                                        \
+    "(\\.\\.)"                                                        \
     /* if they used a prefix, they can repeat it here */                \
     "\\1?"                                                              \
     /* the end of the range */                                          \
