@@ -176,7 +176,7 @@ sub _extra_compress {
     }
     my $result = _simple_compress(\@nodes);
     for ($result) {
-        s/(\d+-\d+)\.UNDOXXX/{$1}/g;
+        s/(\d+\.\.\d+)\.UNDOXXX/{$1}/g;
         s/(\d+)\.UNDOXXX/$1/g;
     }
     return $result;
@@ -262,7 +262,7 @@ sub _simple_expand {
         if (
             $range =~ /\A
                    $node_regex
-                   -            # our separator is '-'
+                   \.\.            # our separator is '..'
                    \1?          # the prefix again, which is optional
 		  (\d+)         # and the end of the range
 		  ((?(3) \3 |   # if the domain matched before, we want it here
@@ -286,8 +286,8 @@ sub _simple_expand {
             my $len = length($start);
 
             # pad $end with leading characters from start so we can
-            # type 01-3 and expand that to 01,02,03 or maybe
-            # ks301000-9 for ks301000-301009
+            # type 01..3 and expand that to 01,02,03 or maybe
+            # ks301000..9 for ks301000..301009
             my $len_end = length($end);
             $end = substr($start, 0, $len - $len_end) . $end
               if $len_end < $len;
@@ -324,7 +324,7 @@ sub _get_group {
     my ($prefix, $digits, $count, $suffix) = @_;
 
     $prefix = "" unless defined $prefix;
-    my $group = sprintf("%s%0*d-%s",
+    my $group = sprintf("%s%0*d..%s",
         $prefix, length($digits), $digits,
         _ignore_common_prefix($digits, $digits + $count));
 
