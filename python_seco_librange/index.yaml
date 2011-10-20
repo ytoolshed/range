@@ -1,0 +1,17 @@
+---
+default:
+  build: '1'
+  name: python-secorange
+  release: '1'
+  requires:
+    - librange
+  summary: Python library for range operations
+  version: '1.0.2'
+
+deb:
+  dirtransforms:
+    - from: /usr/lib
+      to: /usr/local/lib
+x86_64:
+ nobuild: 1
+ preferarch: i386
