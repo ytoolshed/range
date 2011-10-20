@@ -2,13 +2,4 @@ default:
   name: perl-seco-data-range
   summary: "Perl interface to libcrange"
   arch: noarch
-  version: '1.1'
-  requires:
-    - perl-seco-getopt
-yinst:
-  name: perl_seco_data_range
-  summary: "Perl interface to libcrange"
-  arch: noarch
-  version: 0.0.4
-  requires:
-    - perl_seco_getopt
+  version: '1.2'

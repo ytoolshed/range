@@ -12,6 +12,7 @@ else
 fi
 
 mkdir -p $DESTDIR/$dir
-install -o root -g root -m 0755 .libs/mod_range.so $DESTDIR/$dir
+#install -o root -g root -m 0755 .libs/mod_range.so $DESTDIR/$dir
+install -m 0755 .libs/mod_range.so $DESTDIR/$dir
 
 
