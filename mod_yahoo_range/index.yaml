@@ -4,5 +4,6 @@ default:
   requires:
     - libcrange
     - httpd
+    - lwes-local
   summary: mod_range - apache module for range
-  version: '1.2.0'
+  version: '1.1.0'

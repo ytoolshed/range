@@ -1,0 +1,6 @@
+all:
+	apxs -c -I/home/y/include/lwes-0 mod_range.c -lcrange -L/home/y/lib64 -llwes
+
+install:
+	apxs -c -i -I/home/y/include/lwes-0  mod_range.c -lcrange -L/home/y/lib64 -llwes
+	/etc/init.d/httpd restart
