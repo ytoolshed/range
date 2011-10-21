@@ -129,7 +129,7 @@ static char *read_post_data(request_rec * r)
 
      /* setup client to allow Apache to read request body, CHUNKED is supported :)*/ 
      if (ap_setup_client_block(r,REQUEST_CHUNKED_DECHUNK) != OK) {
-           ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "mod_range: ap_setup_client_block failed.");
+           ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "mod_ranged: ap_setup_client_block failed.");
            return ""; 
      }
                                     
@@ -147,7 +147,7 @@ static char *read_post_data(request_rec * r)
                    break;
                                                                                                              
               if (bytes_inserted == -1) {
-                  ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "mod_range: ap_get_client_block failed.");
+                  ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "mod_ranged: ap_get_client_block failed.");
                   free(range);
                   return ""; 
               }

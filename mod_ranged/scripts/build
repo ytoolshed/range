@@ -2,7 +2,7 @@
 
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 
-apxs -c mod_range.c -lcrange
+apxs -c mod_ranged.c -lcrange
 
 platform=`uname -i`
 if [ $platform = i386 ]; then
@@ -12,7 +12,7 @@ else
 fi
 
 mkdir -p $DESTDIR/$dir
-#install -o root -g root -m 0755 .libs/mod_range.so $DESTDIR/$dir
-install -m 0755 .libs/mod_range.so $DESTDIR/$dir
+#install -o root -g root -m 0755 .libs/mod_ranged.so $DESTDIR/$dir
+install -m 0755 .libs/mod_ranged.so $DESTDIR/$dir
 
 
