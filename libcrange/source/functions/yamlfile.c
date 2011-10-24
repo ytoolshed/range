@@ -126,8 +126,6 @@ static set* _cluster_keys(range_request* rr, apr_pool_t* pool,
     sections = set_new(pool, 0);
     section = cur_section = NULL;
 
-    working_range = apr_array_make(req_pool, 1, sizeof(char*));
-    
     for(pair = rootnode->data.mapping.pairs.start;
         pair < rootnode->data.mapping.pairs.top;
         pair++) { /* these are the keys */
@@ -136,9 +134,10 @@ static set* _cluster_keys(range_request* rr, apr_pool_t* pool,
         valuenode = yaml_document_get_node(&document, pair->value);
         if(valuenode->type == YAML_SCALAR_NODE) {
             set_add(sections, cur_section,
-                    valuenode->data.scalar.value);
+                    apr_psprintf(pool, "%s", valuenode->data.scalar.value));
         } else if (valuenode->type == YAML_SEQUENCE_NODE) { /* for nodes in the
                                                                list */
+            working_range = apr_array_make(req_pool, 1, sizeof(char*));
             for(item = valuenode->data.sequence.items.start;
                 item < valuenode->data.sequence.items.top;
                 item++) {
