@@ -1,0 +1,275 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings FATAL => qw/uninitialized/;
+
+use constant YES => 1;
+
+use Seco::Data::Range;
+use Seco::Data::Writer;
+use Seco::Getopt;
+use Term::ReadLine;
+use Cwd;
+
+my %cmds = (
+             # actions on cluster
+             addkey => 'addKey',
+             ak     => 'addKey',
+             delkey => 'deleteKey',
+             dk     => 'deleteKey',
+             # actions on keys
+             include => 'include',
+             i       => 'include',
+             exclude => 'exclude',
+             x       => 'exclude',
+             rminclude  => 'rminclude',
+             ri      => 'rminclude',
+             rmexclude => 'rmexclude',
+             rx      => 'rmexclude',
+             set     => 'set',
+             # actions on "repo"
+             clone  => 'clone',
+          );
+
+my $desc = q/see perldoc for examples/;
+
+
+my $opt  = Seco::Getopt::->new (
+            required => [],
+            default  => {
+                            'k' => ['STABLE',],
+                            'p' => getcwd(),
+                            'd' => 'sdw: no description',
+                        },
+            options  => { 
+                           'k|key=s@' => 
+                                'key to manipulate. can be specified multiple times', 
+                           'c|cluster=s@' => 
+                                'cluster to manipulate. can be specified multiple times'
+                              . 'default to all clusters the range belongs to',
+                           'a|any'   =>
+                                'match any key',
+                           'd|desc' => 'description of change',
+                           'p|path=s'    => 'path to seco repo',
+                           'prompt'      => 'prompt to check diff',
+                        },
+            description => $desc,
+          );
+
+my $cmd = shift;
+$opt->usage ("need a cmd")
+    unless (defined $cmd);
+$opt->usage ("valid cmds: " . join(',',keys %cmds))
+    unless ($cmds{$cmd});
+
+my @clusters;
+if ( ! defined $opt->get('c') ) {
+
+    if ($cmds{$cmd} !~ /(?:^addKey$|^deleteKey$)/) {
+        my $r     = Seco::Data::Range::->new;
+        my $range = $ARGV[0];
+        @clusters = $r->expand( "clusters($range)");
+    }
+
+    push @clusters,'GROUPS'
+        if ($cmds{$cmd} eq 'clone');
+} 
+else {
+    push @clusters,@{$opt->get('c')};
+}
+
+
+my $term    = new Term::ReadLine 'Seco';
+my $OUT     = $term->OUT || \*STDOUT;
+my $prompt;
+
+
+foreach my $cluster (@clusters) {
+
+    my $file = $opt->get('p') . '/' . $cluster . '/' . 'nodes.cf';
+    my $w  = Seco::Data::Writer::->new ( 
+                cluster =>  $cluster,
+                edit    =>  YES,
+                seco_alt_path => $opt->get('p'),
+           );
+
+    if ($cmds{$cmd} =~ /(?:^clone$|^addKey$|^deleteKey$)/) {
+        my $meth = $cmds{$cmd};
+        $w->$meth (@ARGV);
+    }
+    else {
+        foreach my $key (@{$opt->get('k')}) { 
+            my $meth = $cmds{$cmd};
+            $w->getKey($key)->$meth(@ARGV); 
+        }
+    }
+
+    print "$cluster --- diff \n";
+    if ($w->diff) {
+        if ($opt->get('prompt')) {
+            $prompt = "diff OK ?"; 
+            die 'ok :(' unless (defined ($_ = $term->readline($prompt)) && m/^(?:y|yes)$/);
+        }
+        $w->write; 
+    }
+}
+
+__END__
+
+=head1 NAME
+
+<seco-ed> - <simple command line editor for nodes.cf files>
+
+=head1 VERSION
+
+This documentation refers to <seco-ed> revision $Rev$
+
+=head1 USAGE
+     
+       seco-ed --cluster cluster --key keyname command  arguments
+
+
+=head1 REQUIRED ARGUMENTS
+    
+      command [arguments], where command can be one of
+
+=head2
+      delkey|dk
+
+      deletes a key specified by the argument
+      usage: seco-ed --cluster cluster delkey SOMEKEY
+      example:
+-----
+syam@adm1001.rm.corp% seco-ed --prompt --cluster ngd-sk1-rmxad2p0 delkey PURPOSE
+ngd-sk1-rmxad2p0 --- diff 
+--- /var/home/syam/packages/ngd-stc/ngd-sk1-rmxad2p0/nodes.cf   2010-07-14 18:26:20.000000000 +0000
++++ /tmp/3ayKWX57qp     2010-07-14 18:48:51.000000000 +0000
+@@ -135,5 +135,3 @@
+     INCLUDE %ngd:{$LOLZONE}_{$ENV}_CACHES
+ HOSTSXML
+     INCLUDE %ngd:{$ENV}_HOSTSXML
+-PURPOSE
+-    INCLUDE PROD
+diff OK?
+-------
+
+=head2
+      addkey|ak
+
+      adds the specified key with range
+      usage: seco-ed --cluster cluster addkey PURPOSE "example
+      example:
+---
+syam@adm1001.rm.corp% seco-ed --cluster ngd-sk1-rmxad2p0 addkey NEWKEY "EXAMPLE"
+ngd-sk1-rmxad2p0 --- diff 
+--- /var/home/syam/packages/ngd-stc/ngd-sk1-rmxad2p0/nodes.cf   2010-07-14 18:58:10.000000000 +0000
++++ /tmp/7k4kZEeZIn     2010-07-14 19:00:58.000000000 +0000
+@@ -136,3 +136,5 @@
+     INCLUDE %ngd:{$ENV}_HOSTSXML
+ PURPOSE
+     INCLUDE PROD
++NEWKEY
++    INCLUDE EXAMPLE
+
+---
+      
+
+=head2
+      include|i
+
+      usage: seco-ed [--key KEY ] --cluster cluster include range [comment]
+      example:
+syam@adm1001.rm.corp% seco-ed --prompt --cluster ngd-sk1-rmxad2p0 include newhost                
+ngd-sk1-rmxad2p0 --- diff 
+--- /var/home/syam/packages/ngd-stc/ngd-sk1-rmxad2p0/nodes.cf   2010-07-14 18:26:20.000000000 +0000
++++ /tmp/hv17S0zyih     2010-07-14 18:53:06.000000000 +0000
+@@ -48,6 +48,7 @@
+     EXCLUDE ad0937.rm.sk1.blah.com #Bad disk,plz replace and re-image  1-1377629941
+     EXCLUDE ad0766.rm.sk1.blah.com #FS error 1-1387021921
+     EXCLUDE ad0893.rm.sk1.blah.com #bad disk
++    INCLUDE newhost
+ 
+ CLUSTER
+     INCLUDE $STABLE
+diff OK ?
+
+
+=head2
+      exclude|x
+
+      usage: seco-ed [--key STABLE] [--cluster CLUSTER]  exclude range [comment]
+      example:
+---
+syam@adm1001.rm.corp% seco-ed --prompt  exclude ad0136.rm.sk1.blah.com        
+ngd-sk1-rmxad2p0 --- diff 
+--- /var/home/syam/packages/ngd-stc/ngd-sk1-rmxad2p0/nodes.cf   2010-07-14 18:26:20.000000000 +0000
++++ /tmp/KK4c6qBcec     2010-07-14 18:56:29.000000000 +0000
+@@ -48,6 +48,7 @@
+     EXCLUDE ad0937.rm.sk1.blah.com #Bad disk,plz replace and re-image  1-1377629941
+     EXCLUDE ad0766.rm.sk1.blah.com #FS error 1-1387021921
+     EXCLUDE ad0893.rm.sk1.blah.com #bad disk
++    EXCLUDE ad0136.rm.sk1.blah.com
+ 
+ CLUSTER
+     INCLUDE $STABLE
+---
+
+=head2
+       rmexclude|rminclude
+
+       usage: seco-ed [--key STABLE] [--cluster CLUSTER]  exclude range [comment]
+       example:
+----
+syam@adm1001.rm.corp% seco-ed rmexclude ad0893.rm.sk1.blah.com
+ngd-sk1-rmxad2p0 --- diff 
+--- /var/home/syam/packages/ngd-stc/ngd-sk1-rmxad2p0/nodes.cf   2010-07-14 18:26:20.000000000 +0000
++++ /tmp/lTeGmCWTHI     2010-07-14 18:58:10.000000000 +0000
+@@ -47,7 +47,6 @@
+     EXCLUDE ad0884.rm.sk1.blah.com #Bad disk. Please replace 1-1359495971
+     EXCLUDE ad0937.rm.sk1.blah.com #Bad disk,plz replace and re-image  1-1377629941
+     EXCLUDE ad0766.rm.sk1.blah.com #FS error 1-1387021921
+-    EXCLUDE ad0893.rm.sk1.blah.com #bad disk
+ 
+ CLUSTER
+     INCLUDE $STABLE
+----
+
+=head1 OPTIONS
+
+       seco-ed --help    
+
+=head1 DESCRIPTION
+
+       a simple command line editor for nodes.cf formatted files 
+
+=head1 DIAGNOSTICS
+
+    tbd
+
+
+=head1 CONFIGURATION AND ENVIRONMENT
+   
+
+=head1 DEPENDENCIES
+
+    Seco::Data::Writer
+
+=head1 INCOMPATIBILITIES
+
+    None.
+
+=head1 BUGS AND LIMITATIONS
+
+    You tell me.
+
+=head1 AUTHOR
+    
+    <syamyahoo-inc.com>
+    Last edited by: $Author$
+
+=head1 LICENCE AND COPYRIGHT
+
+# Copyright (c) 2011, Yahoo! Inc.  All rights reserved.
+# Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.  
+
+

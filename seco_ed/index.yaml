@@ -1,0 +1,8 @@
+---
+default:
+  name: seco-ed
+  summary:  command line editor for nodes.cf 
+  version: '1.0'
+  arch: noarch
+  requires: 
+    - perl-seco-data-writer
