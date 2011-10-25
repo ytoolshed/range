@@ -1,3 +1,26 @@
+/* yamlfile.c: yaml file cluster definiton support for range
+   adapted from nodescf.c ebourget@linkedin.com
+
+   Requires libyaml
+
+   By default, cluster files go into /etc/range/*.yaml.  An example:
+
+ALL:
+  - r4,r2,r3
+
+CLUSTER:
+  - r10
+
+BUBBA:
+  - 1..10
+
+BLARG: '1.0.2'
+
+If a key is a scalar, that value is used as the value; if it's a list,
+the key will be composed of all elements set-added together.
+
+*/
+
 #include <assert.h>
 #include <yaml.h>
 #include <pcre.h>
@@ -13,6 +36,7 @@
 
 static const char* yaml_path = "/etc/range";
 
+/* List of functions that are provided by this module */
 const char** functions_provided(libcrange* lr)
 {
     static const char* functions[] = {"mem", "cluster", "clusters",
@@ -71,6 +95,7 @@ char* _join_elements(apr_pool_t* pool, char sep, set* the_set)
     return result;
 }
 
+/* this is where the magic happens */
 static set* _cluster_keys(range_request* rr, apr_pool_t* pool,
                           const char* cluster, const char* cluster_file)
 {
@@ -91,6 +116,7 @@ static set* _cluster_keys(range_request* rr, apr_pool_t* pool,
     
     FILE* fp = fopen(cluster_file, "r");
 
+    /* make sure we can open the file and parse it */
     if (!fp) {
         range_request_warn(rr, "%s: %s not readable", cluster, cluster_file);
         return set_new(pool, 0);
@@ -113,6 +139,7 @@ static set* _cluster_keys(range_request* rr, apr_pool_t* pool,
     fclose(fp);
     
     rootnode = yaml_document_get_root_node(&document);
+    /* make sure it's just a simple dictionary */
     if(rootnode->type != YAML_MAPPING_NODE) {
         range_request_warn(rr, "%s: malformatted cluster definition %s",
                            cluster, cluster_file);
@@ -122,7 +149,8 @@ static set* _cluster_keys(range_request* rr, apr_pool_t* pool,
         return set_new(pool, 0);
     }
 
-    /* after */
+    /* "sections" refers to cluster sections - %cluster:SECTION
+       it's what we're going to return */
     sections = set_new(pool, 0);
     section = cur_section = NULL;
 
@@ -130,13 +158,15 @@ static set* _cluster_keys(range_request* rr, apr_pool_t* pool,
         pair < rootnode->data.mapping.pairs.top;
         pair++) { /* these are the keys */
         keynode = yaml_document_get_node(&document, pair->key);
+        /* cur_section is the keyname - the WHATEVER in %cluster:WHATEVER */
         cur_section = apr_pstrdup(pool, (char *)(keynode->data.scalar.value));
         valuenode = yaml_document_get_node(&document, pair->value);
+        /* if the value is a scalar, that's our answer */
         if(valuenode->type == YAML_SCALAR_NODE) {
             set_add(sections, cur_section,
                     apr_psprintf(pool, "%s", valuenode->data.scalar.value));
-        } else if (valuenode->type == YAML_SEQUENCE_NODE) { /* for nodes in the
-                                                               list */
+        } else if (valuenode->type == YAML_SEQUENCE_NODE) {
+            /* otherwise, glue together all the values in the list */
             working_range = apr_array_make(req_pool, 1, sizeof(char*));
             for(item = valuenode->data.sequence.items.start;
                 item < valuenode->data.sequence.items.top;
@@ -150,15 +180,20 @@ static set* _cluster_keys(range_request* rr, apr_pool_t* pool,
                     yaml_parser_delete(&parser);
                     return set_new(pool, 0);
                 } else { /* add to the working set */
+                    /* include it in () because we're going to comma it
+                       together later */
                     *(char**)apr_array_push(working_range) =
                         apr_psprintf(pool, "(%s)", node->data.scalar.value);
                 }
             }
+            /* glue the list items together with commas */
             set_add(sections, cur_section,
                     apr_array_pstrcat(pool, working_range, ','));
         }
     }
 
+    /* Add a "KEYS" toplevel key that lists all the other keys */
+    /* TODO: make an error if somebody tries to specify KEYS manually? */
     set_add(sections, "KEYS", _join_elements(pool, ',', sections));
     yaml_document_delete(&document);
     yaml_parser_delete(&parser);
@@ -218,6 +253,7 @@ static range* _expand_cluster(range_request* rr,
     return do_range_expand(rr, res);
 }
 
+/* get a list of all clusters */
 static const char** _all_clusters(range_request* rr)
 {
     DIR* dir;
@@ -227,8 +263,10 @@ static const char** _all_clusters(range_request* rr)
     char nodes_cf_buf[8192];
     set_element** elts;
     const char** table;
+    char *cname;
     int i, n;
 
+    /* check in the cluster dir, by default /etc/range */
     dir = opendir(yaml_path);
     if (!dir) {
         range_request_warn(rr, "%s: can't opendir", yaml_path);
@@ -237,12 +275,21 @@ static const char** _all_clusters(range_request* rr)
 
     while ( (dir_entry = readdir(dir)) != NULL) {
         const char* cluster = dir_entry->d_name;
-
-        snprintf(nodes_cf_buf, sizeof nodes_cf_buf, "%s/%s.yaml",
+        snprintf(nodes_cf_buf, sizeof nodes_cf_buf, "%s/%s",
                  yaml_path, cluster);
+        
         nodes_cf_buf[sizeof nodes_cf_buf - 1] = '\0';
-        if (access(nodes_cf_buf, R_OK) == 0)
-            set_add(res, cluster, 0);
+
+        /* it's only a cluster if it's .yaml */
+        if(!strcmp(nodes_cf_buf+ (strlen(nodes_cf_buf) - 5),
+                   ".yaml")) {
+            if (access(nodes_cf_buf, R_OK) == 0) {
+                /* cut the yaml out */
+                cname = apr_psprintf(pool, "%s", cluster);
+                cname[strlen(cname)-5] = '\0';
+                set_add(res, cname, 0);
+            }
+        }
     }
 
     closedir(dir);
