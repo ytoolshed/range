@@ -145,7 +145,6 @@ static set* _cluster_keys(range_request* rr, apr_pool_t* pool,
                            cluster, cluster_file);
         yaml_document_delete(&document);
         yaml_parser_delete(&parser);
-        fclose(fp);
         return set_new(pool, 0);
     }
 
