@@ -1,0 +1,6 @@
+Revision history for Perl extension Seco::AwesomeRange.
+
+0.01  Thu Jul  7 04:44:41 2005
+	- original version; created by h2xs 1.23 with options
+		-n Seco::AwesomeRange
+

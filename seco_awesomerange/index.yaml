@@ -1,0 +1,98 @@
+---
+default:
+  name: fatperl-seco-awesomerange
+  summary: awesome test replacement for Seco::Range
+  version: '1.0.3'
+#
+# These will replace "perl-awesomerange" and "perl-awesomerange64"
+#
+
+# Define what needs to be built for each platform.
+# These will later be called like platforms. Arch types
+# are appended so that we can create unique options on each.
+
+yss.i386.redhat:
+  builds:
+    - perl-seco-awesomerange.i386.redhat
+yst.i386.redhat:
+  builds:
+    - perl-seco-awesomerange.i386.redhat
+    - fixperl-seco-awesomerange.i386.redhat
+yss.x86_64.redhat:
+  builds:
+    - perl-seco-awesomerange.x86_64.redhat
+yst.x86_64.redhat:
+  builds:
+    - perl-seco-awesomerange.x86_64.redhat
+    - fixperl-seco-awesomerange.x86_64.redhat
+i386.debian:
+  builds:
+    - perl-seco-awesomerange.i386.debian
+    - fixperl-seco-awesomerange.i386.debian
+
+
+# Specific notes now for each build.  Total of 4 builds
+# (x86 fixperl should refuse to build, suggesting the i386 build be used)
+
+
+######################################################
+# DEBIAN                                             #
+######################################################
+
+fixperl-seco-awesomerange.i386.debian:
+  name: fixperl-seco-awesomerange
+  perl: /usr/local/bin/perl
+  requires:
+    - librange
+    - perl
+  provides:
+    - perl-awesomerange
+  obsoletes:
+    - perl-awesomerange
+
+perl-seco-awesomerange.i386.debian:
+  meta: 1
+  name: perl-seco-awesomerange
+
+
+######################################################
+# REDHAT 32 BIT                                      #
+######################################################
+
+fixperl-seco-awesomerange.i386.redhat:
+  perl: /usr/local/bin/perl
+  name: fixperl-seco-awesomerange
+  obsoletes:
+    - perl-awesomerange
+  provides:
+    - perl-awesomerange
+  requires:
+    - librange
+    - perl
+
+perl-seco-awesomerange.i386.redhat:
+  perl: /usr/bin/perl
+  name: perl-seco-awesomerange
+  requires:
+    - librange
+    - perl
+
+######################################################
+# REDHAT 64 BIT                                      #
+######################################################
+
+fixperl-seco-awesomerange.x86_64.redhat:
+  name: fixperl-seco-awesomerange
+  preferarch: i386
+
+perl-seco-awesomerange.x86_64.redhat:
+  perl: /usr/bin/perl
+  name: perl-seco-awesomerange
+  obsoletes:
+    - perl-awesomerange64
+  provides:
+    - perl-awesomerange64
+  requires:
+    - librange64
+    - perl
+

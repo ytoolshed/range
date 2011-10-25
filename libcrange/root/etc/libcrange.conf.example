@@ -1,0 +1,12 @@
+############
+#
+# Basic libcrange config file
+# Actual file gemstone managed
+#
+############
+loadmodule ip
+loadmodule yst-ip-list
+loadmodule nodescf
+perlmodule LibrangeUtils
+perlmodule LibrangeAdminscf
+

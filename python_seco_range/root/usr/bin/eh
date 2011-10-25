@@ -1,0 +1,44 @@
+#!/usr/bin/python
+
+from optparse import OptionParser
+import sys
+import seco.range
+
+parser = OptionParser()
+
+parser.add_option('-v', '--vip', dest="vip",
+                  default="localhost:80",
+                  help="Hostname of the range server to query")
+parser.add_option('-c', '--count', dest="count",
+                  action="store_true",
+                  help="Print the count of results returned")
+parser.add_option('-e', '--expand', dest="expand",
+                  action="store_true",
+                  help="Print one result per line")
+
+(options, args) = parser.parse_args()
+
+if len(args) == 0:
+    print "Must provide a range to expand"
+    sys.exit(1)
+
+r = seco.range.Range(host=options.vip)
+if options.expand:
+    try:
+        expansion = r.expand(args[0])
+    except seco.range.RangeException as e:
+        print "Range server exception: %s" % e
+        sys.exit(1)
+    for e in expansion:
+        print e
+else:
+    try:
+        expansion = r.expand(args[0], list=False)
+    except seco.range.RangeException as e:
+        print "Range server exception: %s" % e
+        sys.exit(1)
+    print expansion
+    
+
+
+

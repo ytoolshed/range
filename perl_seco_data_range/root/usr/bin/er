@@ -1,0 +1,79 @@
+#!/usr/bin/perl -w
+
+use strict;
+use warnings 'all';
+use Seco::Data::Range;
+use Getopt::Long;
+
+my %opt = (
+           'e|expand'    => 'Print one node per line',
+           'c|count'     => 'Print the count, not the expansion',
+           'v|vip=s'     => 'Use this vip',
+           'p|port=i'    => 'Port to use when connecting',
+           't|timeout=i' => 'Timeout value for queries',
+           'h|help'      => 'Print this help',
+          );
+
+
+my %o;
+my %opts;
+
+usage() unless GetOptions(\%o, keys %opt);
+usage() if($o{h});
+usage() unless(scalar @ARGV);
+
+$opts{server}  = $o{v} if $o{v};
+$opts{timeout} = $o{t} if $o{t};
+$opts{port}    = $o{p} if $o{p};
+$opts{list} = 1;
+
+my $range = Seco::Data::Range->new ( %opts );
+
+my $r = join(',', @ARGV);
+
+my @nodes;
+if ($r eq '') {
+    warn "WARN: No range given!\n";
+    exit 1;
+}
+elsif ($r eq '-') {
+    my @slurp = <STDIN>;
+    chomp for @slurp;
+    @nodes = $range->expand(join ',',@slurp);
+}
+else {
+    @nodes = $range->expand($r);
+}
+
+# capture the error from the initial expansion
+my $expansion_err = $range->last_err;
+
+if ($opt{c}) {
+    print scalar @nodes, "\n";
+}
+else {
+    if (@nodes) {
+        if ($o{e}) {
+            print join( "\n", @nodes ), "\n";
+        }
+        else {
+            print $range->compress( \@nodes ), "\n";
+        }
+        warn "WARN: " . $expansion_err . "\n" if $expansion_err;
+    }
+    else {
+        warn "No nodes specified.\n";
+        warn "WARN: " . $expansion_err . "\n" if $expansion_err;
+        exit 1;
+    }
+
+}
+exit 0;
+
+
+sub usage {
+    foreach my $key (keys %opt)  {
+        print "$key: $opt{$key}\n";
+    }
+    die "\n"
+}

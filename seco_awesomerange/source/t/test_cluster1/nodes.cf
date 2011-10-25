@@ -1,0 +1,21 @@
+ADMIN
+	INCLUDE haides,inferno,ka1001
+        INCLUDE limbo,styx,cocytus
+
+ALL
+        INCLUDE $ADMIN
+        INCLUDE kp2000
+        INCLUDE bar1-2
+
+SMARTPOSTFIX
+	INCLUDE $ADMIN
+
+DUMBPOSTFIX
+	INCLUDE $ALL
+	EXCLUDE $SMARTPOSTFIX
+
+STABLE
+        INCLUDE $ALL
+
+CLUSTER
+        INCLUDE $STABLE

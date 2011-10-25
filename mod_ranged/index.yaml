@@ -1,0 +1,8 @@
+---
+default:
+  name: mod_ranged
+  requires:
+    - libcrange
+    - httpd
+  summary: mod_ranged - apache module for range
+  version: '1.2.0'

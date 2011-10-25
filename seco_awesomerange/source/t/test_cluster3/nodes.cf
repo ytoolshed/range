@@ -1,0 +1,16 @@
+ALL
+        INCLUDE xy1000-xy1009
+
+############# Currernt Front End Nodes
+FE
+        INCLUDE $ALL
+
+STABLE
+        INCLUDE $ALL
+
+CLUSTER
+        INCLUDE $STABLE
+	EXCLUDE xy1005
+
+
+

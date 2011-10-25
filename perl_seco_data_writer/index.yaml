@@ -1,0 +1,9 @@
+---
+default:
+  name: perl-seco-data-writer
+  summary: a write interface to seco range data 
+  arch: noarch
+  version: '0.0.2'
+  requires:
+    - perl-seco-p4
+
