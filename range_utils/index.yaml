@@ -1,0 +1,8 @@
+---
+default:
+  name: range-utils
+  summary: misc utils for range/nodes.cf stuff 
+  version: '1.0'
+  arch: noarch
+  requires: 
+    - perl-seco-data-writer
