@@ -71,7 +71,7 @@ static const char* yaml_path = "/etc/range";
 const char** functions_provided(libcrange* lr)
 {
     static const char* functions[] = {"mem", "cluster", "clusters",
-                                      "get_cluster",
+                                      "get_cluster", "get_groups",
                                       "has", "allclusters", 0 };
 
     /* initialize our path to the nodes database */
@@ -469,7 +469,7 @@ static set* _get_clusters(range_request* rr)
     }
     
     while (*p_cl) {
-        range* nodes_r = _expand_cluster(rr, *p_cl, "ALL");
+        range* nodes_r = _expand_cluster(rr, *p_cl, "CLUSTER");
         const char** nodes = range_get_hostnames(pool, nodes_r);
         const char** p_nodes = nodes;
 
@@ -539,4 +539,31 @@ range* rangefunc_clusters(range_request* rr, range** r)
 
     return ret;
 }
+
+range* rangefunc_get_groups(range_request* rr, range** r)
+{
+    range* ret = range_new(rr);
+    apr_pool_t* pool = range_request_pool(rr);
+    const char** nodes = range_get_hostnames(pool, r[0]);
+    const char** p_nodes = nodes;
+    set* node_cluster = _get_clusters(rr);
+    
+    while (*p_nodes) {
+        apr_array_header_t* clusters = set_get_data(node_cluster, *p_nodes);
+        if (!clusters)
+            range_request_warn_type(rr, "NO_CLUSTER", *p_nodes);
+        else {
+            /* get all */
+            int i;
+            for (i=0; i<clusters->nelts; ++i) {
+                const char* cluster = ((const char**)clusters->elts)[i];
+                range_add(ret, cluster);
+            }
+        }
+        ++p_nodes;
+    }
+
+    return ret;
+}
+
 
