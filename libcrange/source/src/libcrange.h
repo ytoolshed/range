@@ -16,7 +16,7 @@ extern "C"
 #define LIBCRANGE_VERSION "1.0"
 
 #define LIBCRANGE_CONF "/etc/libcrange.conf"
-#define DEFAULT_SQLITE_DB "/var/libcrange/secodata.dat"
+#define DEFAULT_SQLITE_DB "/etc/range.sqlite"
 //#define LIBCRANGE_FUNCDIR "/usr/lib/libcrange"
 
 struct libcrange;
