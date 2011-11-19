@@ -65,7 +65,7 @@ the key will be composed of all elements set-added together.
 #include "libcrange.h"
 #include "range.h"
 
-static const char* yaml_path = "/etc/range";
+static const char* yaml_path = LIBCRANGE_YAML_DIR;
 
 /* List of functions that are provided by this module */
 const char** functions_provided(libcrange* lr)

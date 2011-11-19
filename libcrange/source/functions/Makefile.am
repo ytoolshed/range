@@ -1,4 +1,4 @@
-AM_CFLAGS = -g -pg -Wall -DLIBCRANGE_FUNCDIR=\"$(pkglibdir)\" -I../src @PCRE_CFLAGS@ @APR_CFLAGS@
+AM_CFLAGS = -g -pg -Wall -DLIBCRANGE_FUNCDIR=\"$(pkglibdir)\" -DLIBCRANGE_CONF=\"$(sysconfdir)/range.conf\" -DDEFAULT_SQLITE_DB=\"$(localstatedir)/range.sqlite\" -DLIBCRANGE_YAML_DIR=\"$(sysconfdir)/range/\" -I../src @PCRE_CFLAGS@ @APR_CFLAGS@
 AM_LDFLAGS = -module -L../src -lcrange -lyaml -lsqlite3 @PCRE_LIBS@ @APR_LIBS@
 
 pkglib_LTLIBRARIES = yst-ip-list.la ip.la nodescf.la yamlfile.la sqlite.la
