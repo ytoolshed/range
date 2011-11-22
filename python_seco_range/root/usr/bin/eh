@@ -19,26 +19,34 @@ parser.add_option('-e', '--expand', dest="expand",
 (options, args) = parser.parse_args()
 
 if len(args) == 0:
-    print "Must provide a range to expand"
-    sys.exit(1)
+  print "Must provide a range to expand (or - to read from stdin)"
+  sys.exit(1)
+
+input = args[0]
+if args[0] == '-':
+  try:
+    input = sys.stdin.readlines()
+  except KeyboardInterrupt:
+    sys.exit(0)
+  input = [item.rstrip() for item in input]
 
 r = seco.range.Range(host=options.vip)
-if options.expand:
-    try:
-        expansion = r.expand(args[0])
-    except seco.range.RangeException as e:
-        print "Range server exception: %s" % e
-        sys.exit(1)
+
+if options.count or options.expand:
+  try:
+    expansion = r.expand(input)
+  except seco.range.RangeException as e:
+    print "Range server exception: %s" % e
+    sys.exit(1)
+  if options.count:
+    print len(expansion)
+  else:
     for e in expansion:
-        print e
+      print e
 else:
-    try:
-        expansion = r.expand(args[0], list=False)
-    except seco.range.RangeException as e:
-        print "Range server exception: %s" % e
-        sys.exit(1)
-    print expansion
-    
-
-
-
+  try:
+    expansion = r.collapse(input)
+  except seco.range.RangeException as e:
+    print "Range server exception: %s" % e
+    sys.exit(1)
+  print expansion
