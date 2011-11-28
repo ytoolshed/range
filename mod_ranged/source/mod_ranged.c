@@ -372,7 +372,7 @@ static void register_hooks(apr_pool_t * p)
     ap_hook_handler(range_handler, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA range_module = {
+module AP_MODULE_DECLARE_DATA ranged_module = {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* create per-directory config structure */
     NULL,                       /* merge per-directory config structures */
