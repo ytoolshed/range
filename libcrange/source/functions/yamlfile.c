@@ -274,7 +274,7 @@ static range* _expand_cluster(range_request* rr,
     res = set_get_data(e->sections, section);
 
     if (!res) {
-        if(!strcmp(section, "CLUSTER")) {
+        if(!apr_strnatcmp(section, "CLUSTER")) {
             res = "";
         } else {
             char* cluster_section = apr_psprintf(req_pool,
