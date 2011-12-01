@@ -21,8 +21,9 @@ const char** functions_provided(libcrange* lr)
     return functions;
 }
 
-#define KEYVALUE_SQL "select key, value from range where cluster=?"
-#define ALLCLUSTER_SQL "select distinct cluster from range"
+#define KEYVALUE_SQL "select key, value from clusters where cluster=?"
+#define HAS_SQL "select cluster from clusters where key=? and value=?"
+#define ALLCLUSTER_SQL "select distinct cluster from clusters"
 
 sqlite3* _open_db(range_request* rr) 
 {
@@ -135,7 +136,7 @@ static range* _expand_cluster(range_request* rr,
         range_request_warn_type(rr, "NOCLUSTERDEF", cluster);
         return range_new(rr);
     }
-    
+
     e = set_get_data(cache, cluster);
     if (!e) {
         e = apr_palloc(lr_pool, sizeof(struct cache_entry));
@@ -223,6 +224,9 @@ range* rangefunc_allclusters(range_request* rr, range** r)
 
 range* rangefunc_has(range_request* rr, range** r)
 {
+    sqlite3* db;
+    sqlite3_stmt* stmt;
+    int err;
     range* ret = range_new(rr);
     apr_pool_t* pool = range_request_pool(rr);
     const char** tag_names = range_get_hostnames(pool, r[0]);
@@ -235,17 +239,20 @@ range* rangefunc_has(range_request* rr, range** r)
     const char** cluster = all_clusters;
     int warn_enabled = range_request_warn_enabled(rr);
 
-    if (!cluster) return ret;
+    db = _open_db(rr);
+    err = sqlite3_prepare(db, HAS_SQL, strlen(HAS_SQL), &stmt,
+                          NULL);
+    assert(err == SQLITE_OK);
 
-    range_request_disable_warns(rr);
-    while (*cluster) {
-        range* vals = _expand_cluster(rr, *cluster, tag_name);
-        if (set_get(vals->nodes, tag_value) != NULL) {
-            range_add(ret, *cluster);
-        }
-        cluster++;
+    sqlite3_bind_text(stmt, 1, tag_name, strlen(tag_name), SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 2, tag_value, strlen(tag_value), SQLITE_STATIC);
+
+    while(sqlite3_step(stmt) == SQLITE_ROW) {
+        const char* answer = (const char*)sqlite3_column_text(stmt, 0);
+        range_add(ret, answer);
     }
-    if (warn_enabled) range_request_enable_warns(rr);
+
+    sqlite3_finalize(stmt);
 
     return ret;
 }
