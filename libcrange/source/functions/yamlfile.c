@@ -274,10 +274,14 @@ static range* _expand_cluster(range_request* rr,
     res = set_get_data(e->sections, section);
 
     if (!res) {
-        char* cluster_section = apr_psprintf(req_pool,
-                                             "%s:%s", cluster, section);
-        range_request_warn_type(rr, "NOCLUSTER", cluster_section);
-        return range_new(rr);
+        if(!strcmp(section, "CLUSTER")) {
+            res = "";
+        } else {
+            char* cluster_section = apr_psprintf(req_pool,
+                                                 "%s:%s", cluster, section);
+            range_request_warn_type(rr, "NOCLUSTER", cluster_section);
+            return range_new(rr);
+        }
     }
 
     return do_range_expand(rr, res);
