@@ -4,6 +4,8 @@
 AC_PREREQ(2.59)
 AC_INIT(libcrange, 1.0, prod-eng@yahoo-inc.com)
 AC_CONFIG_SRCDIR(src/libcrange.h)
+AC_CONFIG_MACRO_DIR([m4])
+AC_CONFIG_AUX_DIR([src])
 AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER([config.h])
 
@@ -17,9 +19,10 @@ AC_PROG_CC
 AC_LANG_C
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
-AC_PROG_RANLIB
 AC_PROG_LIBTOOL
 AM_PROG_CC_C_O
+
+
 
 perl_default="/usr/bin/perl"
 AC_ARG_ENABLE([perl], AC_HELP_STRING([--enable-perl=PERL],
@@ -111,7 +114,5 @@ AC_CONFIG_FILES([Makefile
                  doc/Makefile
                  m4/Makefile
                  src/Makefile
-		 perl/Makefile.PL
-		 perl/build
                  functions/Makefile])
 AC_OUTPUT
