@@ -1,0 +1,68 @@
+18:24 < e> i've successfully built it on RHEL6
+18:24 < e> via multipkg
+18:24 < e> you need libcrange, mod_ranged both installed
+18:24 < e> and then edit /etc/libcrange.conf to be something sane
+18:25 < e> for yaml files, [ebourget@ela4-admin02 ~]$ cat /etc/libcrange.conf
+18:25 < e> loadmodule yamlfile
+18:25 < e> that's it
+18:25 < e> then put *.yaml in /etc/range/
+18:25 < e> yaml files are:
+18:25 < e> [ebourget@ela4-admin02 range]$ cat ela4-zeppelin1.yaml 
+18:25 < e> ALL:
+18:25 < e> - ela4-app0240.prod.linkedin.com
+18:25 < e> - ela4-app0357.prod.linkedin.com
+18:25 < e> CLUSTER:
+18:25 < e> - ela4-app0240.prod.linkedin.com
+18:25 < e> - ela4-app0357.prod.linkedin.com
+18:25 < e> CONFIG: zeppelin-war-PROD-ELA4-0.0.1140-RC4.15145
+18:25 < e> CONTAINER: zeppelin
+18:25 < e> CONTEXTPATH:
+18:25 < e> etc
+18:32 < p> builds fine on osx
+18:32 < p> s/libtoolize/glibtoolize/
+18:33 < p> how different is the yaml/range specification stuff than the rolesdb stuff i'm used to?
+18:35 < m> in terms of parsing?
+18:35 < p> in terms of specification
+18:35 < p> like:
+18:35 < p> ALL:\n- foo4-10.bar.com
+18:36 < p> is that 4..10?
+18:36 < m> depend if you have - or .. as the expansion dealie
+18:36 < m> I think e switched it
+18:36 < p> yeah i saw
+18:36 < m> so - does nothing now
+18:36 < p> heh
+18:36 < p> but .. would, got it
+18:36 < m> but foo4..10.bar.com would be 4..10 yes
+18:36 < m> no enclosing {} necessary
+18:37 < e> - does set diff
+18:37 < p> and i guess i'm confused about the difference between the definitions like ALL: and how i'm used to using 
+           role-names.  is 'ALL' in this case a rolename?
+18:37 < e> (a,b) - b ==> a
+18:37 < m> e: with spaces right
+18:37 < m> yeah
+18:37 < e> uh
+18:37 < e> ALL is a metadata key
+18:37 < e> if you have foo.yaml
+18:37 < e> with ALL: bar
+18:37 < e> then
+18:37 < m> p: so, the *file* represents a cluster (role)
+18:37 < e> %foo:ALL == bar
+18:37 < m> and
+18:37 < m> every cluster/role is actually a dictionary/hash
+18:37 < e> there's only one magic key
+18:38 < e> called CLUSTER
+18:38 < e> where if you just say %foo
+18:38 < e> it means %foo:CLUSTER
+18:38 < e> everything else is just whatever you feel like calling it
+18:38 < m> so from a roles perspective
+18:38 < m> there are two magic clusters, HOSTS and GROUPS
+18:38 < p> ahhh
+18:38 < p> ok
+18:39 < m> and %GROUPS:FOO has a shorthand syntax of @FOO
+18:39 < m> and this is what rolesdb implemented
+18:39 < m> but the actual underlying cluster labels can have multiple definitions of host lists
+18:39 < m> with arbitary names
+18:40 < m> and as e said there's one that's magic: %foo:CLUSTER, and a few that are by convention like :ALL
+18:40 < p> i'll try to distil this into some actual documentation at some point
+18:40 < p> needs QUICKSTART
+
