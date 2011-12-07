@@ -1,0 +1,8 @@
+/usr/bin/perl Makefile.PL
+make
+make install DESTDIR=$DESTDIR
+find $DESTDIR -name perllocal.pod -type f -exec rm \{\} \;
+#if [ -f /usr/lib/rpm/redhat/brp-compress ]; then
+#  RPM_BUILD_ROOT=$DESTDIR /usr/lib/rpm/redhat/brp-compress
+#fi
+
