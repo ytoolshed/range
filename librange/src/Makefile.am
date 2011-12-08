@@ -1,4 +1,4 @@
-SUBDIRS = apache_mod_ranged functions
+SUBDIRS = functions
 AM_YFLAGS = -d
 AM_CFLAGS = -fPIC -Wall
 bin_PROGRAMS = range
