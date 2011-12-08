@@ -1,0 +1,5 @@
+all:
+	@APXS@ -c mod_ranged.c -lrange
+
+install:
+	@APXS@ -c -i mod_ranged.c -lrange

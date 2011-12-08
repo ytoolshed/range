@@ -1,26 +1,24 @@
+SUBDIRS = apache_mod_ranged functions
 AM_YFLAGS = -d
 AM_CFLAGS = -fPIC -Wall
-bin_PROGRAMS = crange
+bin_PROGRAMS = range
 
-crange_SOURCES = main.c
-crange_CFLAGS = @APR_CFLAGS@
-crange_LDFLAGS = -lcrange @PERL_LIBS@ @APR_LIBS@
-include_HEADERS = libcrange.h
+range_SOURCES = main.c
+range_CFLAGS = @APR_CFLAGS@
+range_LDFLAGS = -lrange @PERL_LIBS@ @APR_LIBS@
+include_HEADERS = librange.h
 
 BUILT_SOURCES = range_scanner.h
-lib_LTLIBRARIES = libcrange.la
-libcrange_la_SOURCES = range_parser.y range_scanner.l \
+lib_LTLIBRARIES = librange.la
+librange_la_SOURCES = range_parser.y range_scanner.l \
           set.c range_request.c \
           range_sort.c range_parts.c perl_functions.c \
-          libcrange.c ast.c range_compress.c \
+          librange.c ast.c range_compress.c \
           range.c
 
-libcrange_la_CFLAGS = -Wall -DLIBCRANGE_FUNCDIR=\"$(pkglibdir)\" -DLIBCRANGE_CONF=\"/etc/range.conf\" -DDEFAULT_SQLITE_DB=\"/var/range.sqlite\" -DLIBCRANGE_YAML_DIR=\"/var/range/\" @PERL_CFLAGS@ @PCRE_CFLAGS@ @APR_CFLAGS@
-libcrange_la_LDFLAGS = @PERL_LIBS@ @PCRE_LIBS@ @APR_LIBS@
+librange_la_CFLAGS = -Wall -DLIBRANGE_FUNCDIR=\"$(pkglibdir)\" -DLIBRANGE_CONF=\"/etc/range.conf\" -DDEFAULT_SQLITE_DB=\"/var/range.sqlite\" -DLIBRANGE_YAML_DIR=\"/var/range/\" @PERL_CFLAGS@ @PCRE_CFLAGS@ @APR_CFLAGS@
+librange_la_LDFLAGS = @PERL_LIBS@ @PCRE_LIBS@ @APR_LIBS@
 
 range_scanner.h:
 	$(LEX) range_scanner.l
-
-
-
 

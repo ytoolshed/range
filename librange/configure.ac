@@ -2,15 +2,15 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT(libcrange, 1.0, prod-eng@yahoo-inc.com)
-AC_CONFIG_SRCDIR(src/libcrange.h)
-AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_AUX_DIR([src])
-AM_INIT_AUTOMAKE
-AM_CONFIG_HEADER([config.h])
+AC_INIT([librange], [1.1], [ytoolshed@hep.cat])
+AC_CONFIG_SRCDIR(src/librange.h)
+#AC_CONFIG_MACRO_DIR([m4])
+AC_CONFIG_AUX_DIR([build-aux])
+#AM_INIT_AUTOMAKE
+AM_CONFIG_HEADER([src/config.h])
 
-AC_DEFINE_UNQUOTED(PACKAGE, $PACKAGE, [Package name])
-AC_DEFINE_UNQUOTED(VERSION, $VERSION, [Package version])
+AC_DEFINE_UNQUOTED([PACKAGE], ["$PACKAGE"], [Package name])
+AC_DEFINE_UNQUOTED([VERSION], ["$VERSION"], [Package version])
 
 # Checks for programs.
 AC_PROG_YACC
@@ -20,16 +20,19 @@ AC_LANG_C
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LIBTOOL
-AM_PROG_CC_C_O
+#AM_PROG_CC_C_O
 
-
+AC_ARG_ENABLE([apache-module],
+              AC_HELP_STRING([--enable-apache-module],["build mod_ranged for apache."]),
+              MODRANGE=$enableval echo $enableval,
+              unset MODRANGE)
 
 perl_default="/usr/bin/perl"
 AC_ARG_ENABLE([perl], AC_HELP_STRING([--enable-perl=PERL],
-                      [Use this perl binary to build libcrange's perl
+                      ["Use this perl binary to build libcrange's perl
                        functionality.
-                       (Default = /usr/local/bin/perl)]),
-                       PERL=$enable_perl,PERL=$perl_default)
+                       (Default = /usr/local/bin/perl)"]),
+                       PERL=$enableval,PERL=$perl_default)
 AC_DEFUN([AC_CHECK_PERL],[
 AC_MSG_CHECKING(perl in $PERL)
 if test [ -f "$PERL" ]
@@ -48,6 +51,34 @@ else
   AC_MSG_ERROR([${PERL} not found])
 fi
 ])
+
+AC_DEFUN([AC_CHECK_APXS],[
+AC_MSG_CHECKING(for apache APXS)
+AC_ARG_WITH(apxs,
+            [AS_HELP_STRING([[--with-apxs[=FILE]]],
+                            [path to the apxs, defaults to "apxs".])],
+[
+    if test "$withval" = "yes"; then
+      APXS=apxs
+    else
+      APXS="$withval"
+    fi
+])
+
+if test -z "$APXS"; then
+  for i in /usr/sbin /usr/local/apache/bin /usr/bin ; do
+    if test -f "$i/apxs2"; then
+      APXS="$i/apxs2"
+      break
+    fi
+    if test -f "$i/apxs"; then
+      APXS="$i/apxs"
+      break
+    fi
+  done
+fi
+AC_SUBST(APXS)
+)
 
 AC_DEFUN([AC_CHECK_PCRE],[
 AC_PATH_PROG(pcreconfig,pcre-config)
@@ -110,9 +141,10 @@ AC_FUNC_STAT
 AC_FUNC_STRERROR_R
 AC_CHECK_FUNCS([strerror])
 
-AC_CONFIG_FILES([Makefile 
+AC_CONFIG_FILES([Makefile
                  doc/Makefile
                  m4/Makefile
                  src/Makefile
-                 functions/Makefile])
+                 src/functions/Makefile
+                 src/apache_mod_ranged/Makefile])
 AC_OUTPUT
