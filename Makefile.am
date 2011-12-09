@@ -1,12 +1,8 @@
 ACLOCAL_AMFLAGS = -I m4
 
 if WANT_MODRANGE
-	MAYBE = mod_range $(MAYBE)
+DO_MODRANGE = mod_range
 endif
-
-#if WANT_PERL
-#	MAYBE = perl
-#endif
 
 # stealing from http://www.gnu.org/prep/standards/html_node/Directory-Variables.html */
 LIBRANGE_CONF 		= "@sysconfdir@/librange.conf"
@@ -18,6 +14,6 @@ PATHDEFS = -DLIBRANGE_CONF=\"$(LIBRANGE_CONF)\" \
 					-DDEFAULT_SQLITE_DB=\"$(DEFAULT_SQLITE_DB)\"
 
 
-SUBDIRS = src plugins $(MAYBE) doc
-EXTRA_DIST = configure attic m4 clients utils
+SUBDIRS = src plugins $(DO_MODRANGE) doc
+EXTRA_DIST = configure attic m4 clients utils mod_range
 

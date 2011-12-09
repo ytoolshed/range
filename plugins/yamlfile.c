@@ -77,7 +77,7 @@ const char** functions_provided(libcrange* lr)
     /* initialize our path to the nodes database */
 
     /* First try env variable */
-    const char* altpath = getenv( "LIBCRANGE_YAML_PATH" );
+    const char* altpath = getenv( "LIBRANGE_YAML_PATH" );
 
     /* Next try variable from config file */
     if( ! altpath )

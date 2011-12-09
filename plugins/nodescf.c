@@ -21,7 +21,7 @@ const char** functions_provided(libcrange* lr)
     /* initialize our path to the nodes database */
 
     /* First try env variable */
-    const char* altpath = getenv( "LIBCRANGE_NODESCF_PATH" );
+    const char* altpath = getenv( "LIBRANGE_NODESCF_PATH" );
 
     /* Next try variable from config file */
     if( ! altpath )

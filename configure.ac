@@ -28,11 +28,11 @@ AC_ARG_ENABLE(
   perl,
   AC_HELP_STRING([--enable-perl@<:@=PERL@:>@],
     [Use this perl binary to build perl functionality.  Requires libperl and working PCRE.  (default = /usr/local/bin/perl)]),
-    if test "$enableval" == "yes"; then
-      PERL=$perl_default
-    else
-      PERL=$enableval
-    fi
+  if test "$enableval" = "yes"; then
+    PERL=$perl_default
+  else
+    PERL=$enableval
+  fi
 )
 AM_CONDITIONAL([WANT_PERL], [test ! -z "$PERL"])
 
@@ -40,8 +40,8 @@ AC_ARG_ENABLE(
   [mod-range],
   AC_HELP_STRING([--enable-mod-range],
     [Build apache module (Default = enabled)]),
-    MOD_RANGE=$enableval)
-AM_CONDITIONAL([WANT_MODRANGE], [test "$MOD_RANGE" == "yes"])
+    MOD_RANGE=$enableval,[])
+AM_CONDITIONAL([WANT_MODRANGE], [test "$MOD_RANGE" = "yes"])
 
 AC_DEFUN([AC_CHECK_PERL],[
 AC_MSG_CHECKING(perl in $PERL)
@@ -104,8 +104,11 @@ fi
 
 AC_DEFUN([AC_CHECK_APXS],[
 AC_CHECK_PROGS(APXS,[apxs apxs2],[],[path=$PATH$PATH_SEPARATOR/usr/local/apache$PATH_SEPARATOR/usr/apache])
-if test -z "$APXS"; then
+if [ test -z "$APXS" ]; then
   AC_MSG_ERROR("apxs not found")
+else
+  APACHE_INCDIR=`$APXS -q INCLUDEDIR`
+  AC_SUBST(APACHE_INCDIR)
 fi
 ])
 
@@ -119,7 +122,7 @@ if test ! -z "$PERL"; then
 fi
 
 # optionally check for apxs
-if test ! -z "$MOD_RANGE"; then
+if test "$MOD_RANGE" = "yes"; then
   AC_CHECK_APXS
 fi
 
@@ -144,5 +147,6 @@ AC_CONFIG_FILES([Makefile
                  doc/Makefile
                  m4/Makefile
                  src/Makefile
+                 mod_range/Makefile
                  plugins/Makefile])
 AC_OUTPUT

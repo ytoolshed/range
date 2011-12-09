@@ -7,7 +7,11 @@ config.log
 config.status
 config.h
 config.h.in
+config.h.in~
+stamp-h1
+libtool
 .deps/
+.libs/
 m4/
 *.o
 *.lo
@@ -17,3 +21,4 @@ src/range_parser.c
 src/range_scanner.h
 src/range_scanner.c
 src/lex.yy.c
+src/range
