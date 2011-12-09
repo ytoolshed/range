@@ -31,7 +31,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.
-   
+
    Requires libyaml
 
    By default, cluster files go into /etc/range/ *.yaml.  An example:
@@ -65,7 +65,7 @@ the key will be composed of all elements set-added together.
 #include "librange.h"
 #include "range.h"
 
-static const char* yaml_path = LIBCRANGE_YAML_DIR;
+static const char* yaml_path = LIBRANGE_YAML_DIR;
 
 /* List of functions that are provided by this module */
 const char** functions_provided(libcrange* lr)

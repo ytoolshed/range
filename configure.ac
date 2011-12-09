@@ -119,7 +119,7 @@ if test ! -z "$PERL"; then
 fi
 
 # optionally check for apxs
-if test -z "$MOD_RANGE"; then
+if test ! -z "$MOD_RANGE"; then
   AC_CHECK_APXS
 fi
 
