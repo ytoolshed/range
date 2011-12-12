@@ -1,3 +1,12 @@
+# stealing from http://www.gnu.org/prep/standards/html_node/Directory-Variables.html */
+LIBRANGE_CONF 		= "@sysconfdir@/librange.conf"
+LIBRANGE_FUNCDIR 	= "@libdir@/librange"
+LIBRANGE_DATADIR 	= "@localstatedir@/range"
+PATHDEFS = -DLIBRANGE_CONF=\"$(LIBRANGE_CONF)\" \
+					-DLIBRANGE_FUNCDIR=\"$(LIBRANGE_FUNCDIR)\" \
+					-DLIBRANGE_DATADIR=\"$(LIBRANGE_DATADIR)\" \
+					-DDEFAULT_SQLITE_DB=\"$(DEFAULT_SQLITE_DB)\"
+
 AM_YFLAGS = -d
 AM_CFLAGS = -fPIC -Wall $(PATHDEFS)
 
