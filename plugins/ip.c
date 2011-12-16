@@ -2,7 +2,7 @@
 #include "range.h"
 #include "tinydns_ip.h"
 
-const char** functions_provided(libcrange* lr)
+const char** functions_provided(librange* lr)
 {
     static const char* functions[] = {"ip", 0};
     return functions;

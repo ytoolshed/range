@@ -13,11 +13,11 @@ AM_CFLAGS = -fPIC -Wall $(PATHDEFS)
 bin_PROGRAMS = range
 
 range_SOURCES = main.c
-range_CFLAGS = @APR_CFLAGS@ $(AM_CFLAGS)
+range_CFLAGS = @APR_CFLAGS@
 range_LDFLAGS = -lrange @PERL_LIBS@ @APR_LIBS@
 include_HEADERS = librange.h
 
-BUILT_SOURCES = range_scanner.h
+BUILT_SOURCES = range_scanner.c range_scanner.h range_parser.c range_parser.h lex.yy.c
 lib_LTLIBRARIES = librange.la
 librange_la_SOURCES = range_parser.y range_scanner.l \
           set.c range_request.c \

@@ -10,7 +10,7 @@ Copyrights licensed under the New BSD License. See the accompanying LICENSE file
 #include "set.h"
 #include "range.h"
 
-int add_functions_from_perlmodule(libcrange* lr, apr_pool_t* pool,
+int add_functions_from_perlmodule(librange* lr, apr_pool_t* pool,
                                   set* perlfunctions,
                                   const char* module, const char* prefix);
 

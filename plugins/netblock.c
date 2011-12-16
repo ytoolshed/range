@@ -36,7 +36,7 @@ static void compile_regexes()
     }
 }
 
-static set* read_netblocks(libcrange* lr)
+static set* read_netblocks(librange* lr)
 {
     set* result;
     set* colo_nets;
@@ -47,10 +47,10 @@ static set* read_netblocks(libcrange* lr)
     apr_pool_t* pool;
     range_request* rr;
     
-    if ((result = libcrange_get_cache(lr, NET_COLO_CACHE)) != 0)
+    if ((result = librange_get_cache(lr, NET_COLO_CACHE)) != 0)
         return result;
 
-    pool = libcrange_get_pool(lr);
+    pool = librange_get_pool(lr);
     compile_regexes();
     result = set_new(pool, 0);
     colo_nets = set_new(pool, 0);
@@ -116,12 +116,12 @@ static set* read_netblocks(libcrange* lr)
     }
     fclose(fp);
 
-    libcrange_set_cache(lr, COLO_NET_CACHE, colo_nets);
-    libcrange_set_cache(lr, NET_COLO_CACHE, result);
+    librange_set_cache(lr, COLO_NET_CACHE, colo_nets);
+    librange_set_cache(lr, NET_COLO_CACHE, result);
     return result;
 }
 
-net_colo* netcolo_for_ip(libcrange* lr, const ip* node_ip)
+net_colo* netcolo_for_ip(librange* lr, const ip* node_ip)
 {
     int bits;
     set* netblocks;
@@ -204,11 +204,11 @@ range* netblocks_for_dc(range_request* rr, const char* dc)
 {
     set* colo_nets;
     set_element* elt;
-    libcrange* lr = range_request_lr(rr);
+    librange* lr = range_request_lr(rr);
     
     read_netblocks(lr); /* make sure the caches are up-to-date */
 
-    colo_nets = libcrange_get_cache(lr, COLO_NET_CACHE);
+    colo_nets = librange_get_cache(lr, COLO_NET_CACHE);
     elt = set_get(colo_nets, dc);
     if (elt)
         return elt->data;

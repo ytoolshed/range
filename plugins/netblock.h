@@ -20,7 +20,7 @@ typedef struct net_colo
     const char* colo;
 } net_colo;
 
-net_colo* netcolo_for_ip(libcrange* lr, const ip* node_ip);
+net_colo* netcolo_for_ip(librange* lr, const ip* node_ip);
 const char* netblock_to_str(const netblock* block);
 netblock* netblock_from_string(apr_pool_t* pool, const char* netmask);
 char* netblock_key(const netblock* block, char* buf, size_t n);

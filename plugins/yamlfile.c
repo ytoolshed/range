@@ -68,7 +68,7 @@ the key will be composed of all elements set-added together.
 static const char* yaml_path = LIBRANGE_YAML_DIR;
 
 /* List of functions that are provided by this module */
-const char** functions_provided(libcrange* lr)
+const char** functions_provided(librange* lr)
 {
     static const char* functions[] = {"mem", "cluster", "clusters",
                                       "get_cluster", "get_groups",
@@ -81,7 +81,7 @@ const char** functions_provided(libcrange* lr)
 
     /* Next try variable from config file */
     if( ! altpath )
-        altpath = libcrange_getcfg(lr, "yaml_path");
+        altpath = librange_getcfg(lr, "yaml_path");
 
     /* If no alternative was specified, keep the default */
     if (altpath)
@@ -235,8 +235,8 @@ static range* _expand_cluster(range_request* rr,
 {
     struct stat st;
     const char* res;
-    libcrange* lr = range_request_lr(rr);
-    set* cache = libcrange_get_cache(lr, "nodescf:cluster_keys");
+    librange* lr = range_request_lr(rr);
+    set* cache = librange_get_cache(lr, "nodescf:cluster_keys");
     apr_pool_t* req_pool = range_request_pool(rr);
     apr_pool_t* lr_pool = range_request_lr_pool(rr);
 
@@ -246,7 +246,7 @@ static range* _expand_cluster(range_request* rr,
     cluster_file = apr_psprintf(req_pool, "%s/%s.yaml", yaml_path, cluster);
     if (!cache) {
         cache = set_new(lr_pool, 0);
-        libcrange_set_cache(lr, "nodescf:cluster_keys", cache);
+        librange_set_cache(lr, "nodescf:cluster_keys", cache);
     }
 
     if (stat(cluster_file, &st) == -1) {

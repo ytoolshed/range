@@ -13,7 +13,7 @@
 char* _join_elements(apr_pool_t* pool, char sep, set* the_set);
 
 
-const char** functions_provided(libcrange* lr)
+const char** functions_provided(librange* lr)
 {
     static const char* functions[] = {"mem", "cluster", "clusters",
                                       "get_cluster", "get_groups",
@@ -28,17 +28,17 @@ const char** functions_provided(libcrange* lr)
 sqlite3* _open_db(range_request* rr) 
 {
     sqlite3* db;
-    libcrange* lr = range_request_lr(rr);
+    librange* lr = range_request_lr(rr);
     int err;
     
     /* open the db */
-    if (!(db = libcrange_get_cache(lr, "sqlite:nodes"))) {
-        const char* sqlite_db_path = libcrange_getcfg(lr, "sqlitedb");
+    if (!(db = librange_get_cache(lr, "sqlite:nodes"))) {
+        const char* sqlite_db_path = librange_getcfg(lr, "sqlitedb");
         if (!sqlite_db_path) sqlite_db_path = DEFAULT_SQLITE_DB;
         
         err = sqlite3_open(sqlite_db_path, &db);
         assert(err == SQLITE_OK);
-        libcrange_set_cache(lr, "sqlite:nodes", db);
+        librange_set_cache(lr, "sqlite:nodes", db);
     }
 
     return db;
@@ -120,8 +120,8 @@ static range* _expand_cluster(range_request* rr,
 {
     struct stat st;
     const char* res;
-    libcrange* lr = range_request_lr(rr);
-    set* cache = libcrange_get_cache(lr, "nodescf:cluster_keys");
+    librange* lr = range_request_lr(rr);
+    set* cache = librange_get_cache(lr, "nodescf:cluster_keys");
     apr_pool_t* req_pool = range_request_pool(rr);
     apr_pool_t* lr_pool = range_request_lr_pool(rr);
 
@@ -129,7 +129,7 @@ static range* _expand_cluster(range_request* rr,
 
     if (!cache) {
         cache = set_new(lr_pool, 0);
-        libcrange_set_cache(lr, "nodescf:cluster_keys", cache);
+        librange_set_cache(lr, "nodescf:cluster_keys", cache);
     }
 
     if (stat("/etc/range.sqlite", &st) == -1) {

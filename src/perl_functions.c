@@ -14,21 +14,21 @@ Copyrights licensed under the New BSD License. See the accompanying LICENSE file
 #define QUOTEME(x) _QUOTEME(x)
 
 #ifndef MODULE_PATH
- #define MODULE_PATH /var/libcrange/perl
+ #define MODULE_PATH /var/librange/perl
 #endif
 
 #define PERLBOOT                                                        \
     "use strict;"                                                       \
     "use lib qw(" QUOTEME(MODULE_PATH) ");"                                  \
     "our %_FUNCTIONS;"                                                  \
-    "sub ::libcrange_load_file {  my ( $lib, $prefix, $module ) = @_;"  \
+    "sub ::librange_load_file {  my ( $lib, $prefix, $module ) = @_;"  \
     "  require qq($module.pm);"                                         \
     "  my @functions = $module->functions_provided;"                    \
     "  my @mapped_functions = map { qq($prefix$_) } @functions; "       \
     "  for (@functions) { $_FUNCTIONS{qq($prefix$_)} = \\&{qq(${module}::$_)}; }" \
     "  return @mapped_functions;"                                       \
     "}"                                                                 \
-    "sub ::libcrange_call_func {"                                       \
+    "sub ::librange_call_func {"                                       \
     "  my $rr = shift;"                                                 \
     "  my $func = shift;"                                               \
     "  my @args = @_;"                                                  \
@@ -41,7 +41,7 @@ static void lr_init_shared_libs(pTHX);
 static PerlInterpreter* perl_interp = NULL;
 
 static const char**
-get_exported_functions(libcrange* lr, apr_pool_t* pool,
+get_exported_functions(librange* lr, apr_pool_t* pool,
                        const char* module, const char* prefix)
 {
     int i, count;
@@ -56,12 +56,12 @@ get_exported_functions(libcrange* lr, apr_pool_t* pool,
     XPUSHs(sv_2mortal(newSVpv(module, 0)));
     PUTBACK;
 
-    count = call_pv("::libcrange_load_file", G_EVAL | G_ARRAY);
+    count = call_pv("::librange_load_file", G_EVAL | G_ARRAY);
 
     SPAGAIN;
 
     if (SvTRUE(ERRSV)) {
-        fprintf(stderr, "Calling ::libcrange_load_file: %s", SvPV_nolen(ERRSV));
+        fprintf(stderr, "Calling ::librange_load_file: %s", SvPV_nolen(ERRSV));
         functions = NULL;
     }
     else {
@@ -95,7 +95,7 @@ static void destruct_perl(void)
     PERL_SET_CONTEXT(org_perl);
 }
 
-int add_functions_from_perlmodule(libcrange* lr, apr_pool_t* pool,
+int add_functions_from_perlmodule(librange* lr, apr_pool_t* pool,
                                   set* perlfunctions,
                                   const char* module, const char* prefix)
 {
@@ -176,12 +176,12 @@ static range* _perl_function(range_request* rr,
     }
     PUTBACK;
 
-    count = call_pv("::libcrange_call_func", G_EVAL | G_ARRAY);
+    count = call_pv("::librange_call_func", G_EVAL | G_ARRAY);
 
     SPAGAIN;
 
     if (SvTRUE(ERRSV)) {
-        range_request_warn(rr, "Calling ::libcrange_call_func: %s",
+        range_request_warn(rr, "Calling ::librange_call_func: %s",
                        SvPV_nolen(ERRSV));
 
     }

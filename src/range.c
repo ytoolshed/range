@@ -328,15 +328,15 @@ rangeparts *rangeparts_from_hostname(range_request* rr,
          */
         rangeparts = rangeparts_new(pool);
 
-        rangeparts->prefix = libcrange_get_pcre_substring(pool, hostname, offsets, 1);
-        rangeparts->first = libcrange_get_pcre_substring(pool, hostname, offsets, 2);
-        rangeparts->last =  libcrange_get_pcre_substring(pool, hostname, offsets, 5);
+        rangeparts->prefix = librange_get_pcre_substring(pool, hostname, offsets, 1);
+        rangeparts->first = librange_get_pcre_substring(pool, hostname, offsets, 2);
+        rangeparts->last =  librange_get_pcre_substring(pool, hostname, offsets, 5);
         
         if ((offsets[7] - offsets[6]) > 0) {
             /* if we have a domain */
-            rangeparts->domain = libcrange_get_pcre_substring(pool, hostname, offsets, 3);
+            rangeparts->domain = librange_get_pcre_substring(pool, hostname, offsets, 3);
         } else if ((offsets[13] - offsets[12]) > 0) {
-            rangeparts->domain = libcrange_get_pcre_substring(pool, hostname, offsets, 6);
+            rangeparts->domain = librange_get_pcre_substring(pool, hostname, offsets, 6);
         } else {
             rangeparts->domain = "";
         }
@@ -413,13 +413,13 @@ range* range_from_function(range_request* rr,
     range* ret;
     range* (*f)(range_request*, const range**);
     const char* perl_module;
-    libcrange* lr = range_request_lr(rr);
+    librange* lr = range_request_lr(rr);
     
-    perl_module = libcrange_get_perl_module(lr, funcname);
+    perl_module = librange_get_perl_module(lr, funcname);
     if (perl_module)
         ret = perl_function(rr, funcname, r);
     else {
-        f = libcrange_get_function(lr, funcname);
+        f = librange_get_function(lr, funcname);
         if (!f) {
         range_request_warn_type(rr, "NO_FUNCTION", funcname);
             return range_new(rr);

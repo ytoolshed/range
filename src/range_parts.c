@@ -21,10 +21,10 @@ node_parts_int* node_to_parts(apr_pool_t* pool, const char* node_name)
     count = pcre_exec(num_node_re, NULL, node_name, strlen(node_name),
                       0, 0, offsets, sizeof(offsets) / sizeof(int));
     if (count > 0) {
-        result->prefix = libcrange_get_pcre_substring(pool, node_name, offsets, 1);
-        result->num_str = libcrange_get_pcre_substring(pool, node_name, offsets, 2);
+        result->prefix = librange_get_pcre_substring(pool, node_name, offsets, 1);
+        result->num_str = librange_get_pcre_substring(pool, node_name, offsets, 2);
         result->num = atoi(result->num_str);
-        result->domain = count > 3 ? libcrange_get_pcre_substring(pool, node_name, offsets, 3) : "";
+        result->domain = count > 3 ? librange_get_pcre_substring(pool, node_name, offsets, 3) : "";
     }
     else {
         result->prefix = "";

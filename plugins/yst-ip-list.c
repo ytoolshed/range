@@ -7,7 +7,7 @@
 #include "tinydns_ip.h"
 #include "hosts-netblocks.h"
 
-const char** functions_provided(libcrange* lr)
+const char** functions_provided(librange* lr)
 {
     static const char* functions[] = {"vlan", "dc", "hosts_v", "hosts_dc", "vlans_dc", 0};
     return functions;

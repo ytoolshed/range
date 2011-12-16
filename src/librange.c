@@ -20,10 +20,10 @@ Copyrights licensed under the New BSD License. See the accompanying LICENSE file
 #include "perl_functions.h"
 #include "range_request.h"
 
-libcrange* static_lr = NULL;
+librange* static_lr = NULL;
 static int initd = 0;
 
-struct libcrange
+struct librange
 {
     set* caches;
     set* functions;
@@ -38,10 +38,10 @@ struct libcrange
     int want_caching;
 };
 
-static int parse_config_file(libcrange* lr);
-libcrange* libcrange_new(apr_pool_t* pool, const char* config_file)
+static int parse_config_file(librange* lr);
+librange* librange_new(apr_pool_t* pool, const char* config_file)
 {
-    libcrange* lr;
+    librange* lr;
 
     if (!initd) {
         initd = 1;
@@ -49,7 +49,7 @@ libcrange* libcrange_new(apr_pool_t* pool, const char* config_file)
         atexit(apr_terminate);
     }
 
-    lr = apr_palloc(pool, sizeof(libcrange));
+    lr = apr_palloc(pool, sizeof(librange));
     lr->pool = pool;
     lr->caches = set_new(pool, 0);
     lr->default_domain = "example.com";
@@ -69,7 +69,7 @@ libcrange* libcrange_new(apr_pool_t* pool, const char* config_file)
     return lr;
 }
 
-char* libcrange_get_pcre_substring(apr_pool_t* pool, const char* string,
+char* librange_get_pcre_substring(apr_pool_t* pool, const char* string,
                              int offsets[], int substr)
 {
     int idx = substr * 2;
@@ -85,12 +85,12 @@ char* libcrange_get_pcre_substring(apr_pool_t* pool, const char* string,
     return new_str;
 }
 
-apr_pool_t* libcrange_get_pool(libcrange* lr)
+apr_pool_t* librange_get_pool(librange* lr)
 {
     return lr->pool;
 }
 
-const char* libcrange_get_default_domain(libcrange* lr)
+const char* librange_get_default_domain(librange* lr)
 {
     assert(lr);
     return lr->default_domain;
@@ -102,23 +102,23 @@ static void destroy_static_pool(void)
     apr_pool_destroy(static_pool);
 }
 
-libcrange* get_static_lr(void)
+librange* get_static_lr(void)
 {
     if (static_lr == NULL) {
         apr_pool_create(&static_pool, NULL);
-        static_lr = libcrange_new(static_pool, NULL);
+        static_lr = librange_new(static_pool, NULL);
         atexit(destroy_static_pool);
     }
 
     return static_lr;
 }
 
-void libcrange_set_default_domain(libcrange* lr, const char* domain)
+void librange_set_default_domain(librange* lr, const char* domain)
 {
     lr->default_domain = apr_pstrdup(lr->pool, domain);
 }
 
-const char* libcrange_get_perl_module(libcrange* lr, const char* funcname)
+const char* librange_get_perl_module(librange* lr, const char* funcname)
 {
     assert(lr);
     if (lr->perl_functions)
@@ -127,7 +127,7 @@ const char* libcrange_get_perl_module(libcrange* lr, const char* funcname)
         return NULL;
 }
 
-void* libcrange_get_function(libcrange* lr, const char* funcname)
+void* librange_get_function(librange* lr, const char* funcname)
 {
     set* functions;
     assert(lr);
@@ -138,7 +138,7 @@ void* libcrange_get_function(libcrange* lr, const char* funcname)
 }
 
 
-void* libcrange_get_cache(libcrange* lr, const char* name)
+void* librange_get_cache(librange* lr, const char* name)
 {
     set_element* se;
     if (lr == NULL) lr = get_static_lr();
@@ -149,20 +149,20 @@ void* libcrange_get_cache(libcrange* lr, const char* name)
         return NULL;
 }
 
-void libcrange_clear_caches(libcrange* lr)
+void librange_clear_caches(librange* lr)
 {
     if (lr == NULL) lr = get_static_lr();
     lr->caches = set_new(lr->pool, 317);
 }
 
-void libcrange_set_cache(libcrange* lr, const char* name, void* data)
+void librange_set_cache(librange* lr, const char* name, void* data)
 {
     if (lr == NULL) lr = get_static_lr();
     if (lr->want_caching)
         set_add(lr->caches, name, data);
 }
 
-const char* range_compress(libcrange* lr, apr_pool_t* p, const char** nodes)
+const char* range_compress(librange* lr, apr_pool_t* p, const char** nodes)
 {
     range* r;
     range_request* rr;
@@ -176,7 +176,7 @@ const char* range_compress(libcrange* lr, apr_pool_t* p, const char** nodes)
     return do_range_compress(rr, r);
 }
 
-range_request* range_expand(libcrange* lr, apr_pool_t* pool, const char* text)
+range_request* range_expand(librange* lr, apr_pool_t* pool, const char* text)
 {
     range_request* rr;
 
@@ -196,28 +196,28 @@ range_request* range_expand_rr(range_request* rr, const char* text)
     return rr;
 }
 
-void libcrange_want_caching(libcrange* lr, int want)
+void librange_want_caching(librange* lr, int want)
 {
     if (lr == NULL) lr = get_static_lr();
     lr->want_caching = want;
 }
 
-const char* libcrange_get_version(void)
+const char* librange_get_version(void)
 {
     return LIBRANGE_VERSION;
 }
 
-const char* libcrange_getcfg(libcrange* lr, const char* what)
+const char* librange_getcfg(librange* lr, const char* what)
 {
     if (lr == NULL) lr = get_static_lr();
 
     return set_get_data(lr->vars, what);
 }
 
-static const char** get_function_names(libcrange* lr, void *handle,
+static const char** get_function_names(librange* lr, void *handle,
                                        const char* module)
 {
-    const char** (*f)(libcrange*);
+    const char** (*f)(librange*);
     const char* err;
 
     *(void **)(&f) = dlsym(handle, "functions_provided");
@@ -230,7 +230,7 @@ static const char** get_function_names(libcrange* lr, void *handle,
     return (*f)(lr);
 }
 
-static int add_function(libcrange* lr, set* functions, void* handle,
+static int add_function(librange* lr, set* functions, void* handle,
                         const char* module, const char* prefix,
                         const char* function)
 {
@@ -258,7 +258,7 @@ static int add_function(libcrange* lr, set* functions, void* handle,
     return 0;
 }
 
-static int add_functions_from_module(libcrange* lr, set* functions,
+static int add_functions_from_module(librange* lr, set* functions,
                                      const char* module, const char* prefix)
 {
     void* handle;
@@ -299,7 +299,7 @@ static int add_functions_from_module(libcrange* lr, set* functions,
 #define PERLMODULE_RE "^\\s*perlmodule\\s+([-\\S]+)(?:\\s+prefix=([-\\w]+))?\\s*$"
 #define VAR_RE "^\\s*([-\\w]+)\\s*=\\s*(\\S+)\\s*$"
 
-static int parse_config_file(libcrange* lr)
+static int parse_config_file(librange* lr)
 {
     int ovector[30];
     const char* error;

@@ -9,7 +9,7 @@
 #include "librange.h"
 #include "range.h"
 
-const char** functions_provided(libcrange* lr)
+const char** functions_provided(librange* lr)
 {
     static const char* functions[] = {"group", 0};
     return functions;
@@ -24,21 +24,21 @@ range* rangefunc_group(range_request* rr, range** r)
     int errors = 0;
 
     apr_pool_t* pool = range_request_pool(rr);
-    libcrange* lr = range_request_lr(rr);
+    librange* lr = range_request_lr(rr);
 
     ret = range_new(rr);
     members = range_get_hostnames(pool, r[0]);
 
-    const char* default_namespace = libcrange_getcfg(lr, "default_namespace");
+    const char* default_namespace = librange_getcfg(lr, "default_namespace");
     if (!default_namespace)
         default_namespace = "yst";
     
-    if (!(conn = (PGconn *)libcrange_get_cache(lr, "pgsql:conn"))) {
-        const char* pgsql_user = libcrange_getcfg(lr, "pgsql_user");
-        const char* pgsql_db = libcrange_getcfg(lr, "pgsql_db");
-        const char* pgsql_passwd = libcrange_getcfg(lr, "pgsql_passwd");
-        const char* pgsql_host = libcrange_getcfg(lr, "pgsql_host");
-        const char* pgsql_port = libcrange_getcfg(lr, "pgsql_port");
+    if (!(conn = (PGconn *)librange_get_cache(lr, "pgsql:conn"))) {
+        const char* pgsql_user = librange_getcfg(lr, "pgsql_user");
+        const char* pgsql_db = librange_getcfg(lr, "pgsql_db");
+        const char* pgsql_passwd = librange_getcfg(lr, "pgsql_passwd");
+        const char* pgsql_host = librange_getcfg(lr, "pgsql_host");
+        const char* pgsql_port = librange_getcfg(lr, "pgsql_port");
 
         if (!pgsql_user) {
             range_request_warn(rr, "pgsql no user specified");
@@ -81,7 +81,7 @@ range* rangefunc_group(range_request* rr, range** r)
             return ret;
         }
 
-        libcrange_set_cache(lr, "pgsql:conn", conn);
+        librange_set_cache(lr, "pgsql:conn", conn);
     }
 
     for (i = 0; members[i]; i++) { /* for each gemgroup */

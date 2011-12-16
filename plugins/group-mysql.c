@@ -9,7 +9,7 @@
 #include "librange.h"
 #include "range.h"
 
-const char** functions_provided(libcrange* lr)
+const char** functions_provided(librange* lr)
 {
     static const char* functions[] = {"group", 0};
     return functions;
@@ -24,20 +24,20 @@ range* rangefunc_group(range_request* rr, range** r)
     MYSQL_ROW row;
     MYSQL_RES *res;
     apr_pool_t* pool = range_request_pool(rr);
-    libcrange* lr = range_request_lr(rr);
+    librange* lr = range_request_lr(rr);
     
     ret = range_new(rr);
     members = range_get_hostnames(pool, r[0]);
 
-    if(!(conn = (MYSQL *)libcrange_get_cache(lr, "mysql:nodes"))) {
-	const char* mysql_user = libcrange_getcfg(lr, "mysqluser");
-	const char* mysql_db = libcrange_getcfg(lr, "mysqldb");
-	const char* mysql_passwd = libcrange_getcfg(lr, "mysqlpasswd");
+    if(!(conn = (MYSQL *)librange_get_cache(lr, "mysql:nodes"))) {
+	const char* mysql_user = librange_getcfg(lr, "mysqluser");
+	const char* mysql_db = librange_getcfg(lr, "mysqldb");
+	const char* mysql_passwd = librange_getcfg(lr, "mysqlpasswd");
 
 	conn = mysql_init(NULL);
 	mysql_real_connect(conn, "docking", mysql_user, mysql_passwd,
 			   mysql_db, 0, NULL, 0);
-	libcrange_set_cache(lr, "mysql:nodes", conn);
+	librange_set_cache(lr, "mysql:nodes", conn);
     }
     for(i = 0; members[i]; i++) { /* for each gemgroup */
         int all = strcmp(members[i], "ALL") == 0;

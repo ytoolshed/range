@@ -28,19 +28,19 @@ static cache_entry* _dummy_cache_entry(apr_pool_t* pool)
     return e;
 }
 
-static cache_entry* tinydns_read(libcrange* lr)
+static cache_entry* tinydns_read(librange* lr)
 {
     const char* error;
     int offset;
     static pcre* a_re = NULL;
     static pcre* cname_re = NULL;
 
-    apr_pool_t* pool = libcrange_get_pool(lr);
+    apr_pool_t* pool = librange_get_pool(lr);
     cache_entry* e;
     struct stat st;
     char line[8192];
     FILE* fp;
-    const char* dns_file = libcrange_getcfg(lr, "dns_data_file");
+    const char* dns_file = librange_getcfg(lr, "dns_data_file");
     if (!dns_file) dns_file = DNS_FILE;
 
     if (stat(dns_file, &st) < 0) {
@@ -49,14 +49,14 @@ static cache_entry* tinydns_read(libcrange* lr)
         return _dummy_cache_entry(pool);
     }
 
-    e = libcrange_get_cache(lr, "dns:tinydns_data");
+    e = librange_get_cache(lr, "dns:tinydns_data");
     if (e && e->mtime == st.st_mtime)
         return e;
 
     if (!e) {
         e = apr_palloc(pool, sizeof(cache_entry));
         apr_pool_create(&e->pool, pool);
-        libcrange_set_cache(lr, "dns:tinydns_data", e);
+        librange_set_cache(lr, "dns:tinydns_data", e);
     }
     else
         apr_pool_clear(e->pool);
@@ -139,7 +139,7 @@ ip* tinydns_get_ip(range_request* rr,  const char* hostname)
 }
 
 
-ip_host** tinydns_all_ip_hosts(libcrange* lr, apr_pool_t* pool)
+ip_host** tinydns_all_ip_hosts(librange* lr, apr_pool_t* pool)
 {
     ip_host** result;
     ip_host** p;

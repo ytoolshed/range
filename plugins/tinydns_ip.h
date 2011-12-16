@@ -22,7 +22,7 @@ typedef struct ip_host
 unsigned str2ip(const char* str);
 ip* ip_new(apr_pool_t* pool, const char* ipaddr);
 ip* tinydns_get_ip(range_request* rr, const char* hostname);
-ip_host** tinydns_all_ip_hosts(libcrange* lr, apr_pool_t* pool);
+ip_host** tinydns_all_ip_hosts(librange* lr, apr_pool_t* pool);
 
 
 #endif

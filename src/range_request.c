@@ -18,11 +18,11 @@ struct range_request {
     char* warnings;
     set* warn_type;
     int warn_enabled;
-    struct libcrange* lr;
+    struct librange* lr;
     range* r;
 };
 
-range_request* range_request_new(struct libcrange* lr, apr_pool_t* pool) 
+range_request* range_request_new(struct librange* lr, apr_pool_t* pool) 
 {
     range_request* res = apr_palloc(pool, sizeof(range_request));
     res->lr = lr;
@@ -61,7 +61,7 @@ range* range_request_results(range_request* rr)
 }
 
 
-libcrange* range_request_lr(range_request* rr)
+librange* range_request_lr(range_request* rr)
 {
     return rr->lr;
 }
@@ -154,7 +154,7 @@ apr_pool_t* range_request_pool(range_request* rr)
 
 apr_pool_t* range_request_lr_pool(range_request* rr)
 {
-    return libcrange_get_pool(rr->lr);
+    return librange_get_pool(rr->lr);
 }
 
 void range_request_set(range_request* rr, range* r)

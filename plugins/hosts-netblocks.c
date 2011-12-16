@@ -10,10 +10,10 @@
 #define DC_HOSTS_CACHE "yst-ip-list:dc_hosts"
 #define NETBLOCK_HOSTS_CACHE "yst-ip-list:netblocks_hosts"
 
-static void init_caches(libcrange* lr)
+static void init_caches(librange* lr)
 {
     const char* default_domain;
-    apr_pool_t* pool = libcrange_get_pool(lr);
+    apr_pool_t* pool = librange_get_pool(lr);
     range_request* rr;
     
     /* Create a netblock -> hosts mapping */
@@ -25,7 +25,7 @@ static void init_caches(libcrange* lr)
 
     assert(all_hosts);
     rr = range_request_new(lr, pool);
-    default_domain = libcrange_get_default_domain(lr);
+    default_domain = librange_get_default_domain(lr);
     while (*all_hosts) {
         char short_hostname[512];
         int len_hostname;
@@ -79,55 +79,55 @@ static void init_caches(libcrange* lr)
             r = elt->data;
         range_add(r, short_hostname);
     }
-    libcrange_set_cache(lr, HOSTS_NETBLOCK_CACHE, hn);
-    libcrange_set_cache(lr, NETBLOCK_HOSTS_CACHE, nh);
-    libcrange_set_cache(lr, DC_HOSTS_CACHE, dh);
-    libcrange_set_cache(lr, HOSTS_DC_CACHE, hd);
+    librange_set_cache(lr, HOSTS_NETBLOCK_CACHE, hn);
+    librange_set_cache(lr, NETBLOCK_HOSTS_CACHE, nh);
+    librange_set_cache(lr, DC_HOSTS_CACHE, dh);
+    librange_set_cache(lr, HOSTS_DC_CACHE, hd);
 }
 
-static set* hosts_netblocks(libcrange* lr)
+static set* hosts_netblocks(librange* lr)
 {
-    set* hn = libcrange_get_cache(lr, HOSTS_NETBLOCK_CACHE);
+    set* hn = librange_get_cache(lr, HOSTS_NETBLOCK_CACHE);
     if (!hn) {
         init_caches(lr);
-        hn = libcrange_get_cache(lr, HOSTS_NETBLOCK_CACHE);
+        hn = librange_get_cache(lr, HOSTS_NETBLOCK_CACHE);
     }
     return hn;
 }
 
-static set* netblock_hosts(libcrange* lr)
+static set* netblock_hosts(librange* lr)
 {
-    set* nh = libcrange_get_cache(lr, NETBLOCK_HOSTS_CACHE);
+    set* nh = librange_get_cache(lr, NETBLOCK_HOSTS_CACHE);
     if (!nh) {
         init_caches(lr);
-        nh = libcrange_get_cache(lr, NETBLOCK_HOSTS_CACHE);
+        nh = librange_get_cache(lr, NETBLOCK_HOSTS_CACHE);
     }
     return nh;
 }
 
-static set* datacenter_hosts(libcrange* lr)
+static set* datacenter_hosts(librange* lr)
 {
-    set* dh = libcrange_get_cache(lr, DC_HOSTS_CACHE);
+    set* dh = librange_get_cache(lr, DC_HOSTS_CACHE);
     if (!dh) {
         init_caches(lr);
-        dh = libcrange_get_cache(lr, DC_HOSTS_CACHE);
+        dh = librange_get_cache(lr, DC_HOSTS_CACHE);
     }
     return dh;
 }
 
-static set* hosts_dc(libcrange* lr)
+static set* hosts_dc(librange* lr)
 {
-    set* hd = libcrange_get_cache(lr, HOSTS_DC_CACHE);
+    set* hd = librange_get_cache(lr, HOSTS_DC_CACHE);
     if (!hd) {
         init_caches(lr);
-        hd = libcrange_get_cache(lr, HOSTS_DC_CACHE);
+        hd = librange_get_cache(lr, HOSTS_DC_CACHE);
     }
     return hd;
 }
 
 range* hosts_in_netblock(range_request* rr, const char* netblock_key)
 {
-    libcrange* lr = range_request_lr(rr);
+    librange* lr = range_request_lr(rr);
     set* nh = netblock_hosts(lr);
     set_element* elt = set_get(nh, netblock_key);
     if (elt)
@@ -139,7 +139,7 @@ range* hosts_in_netblock(range_request* rr, const char* netblock_key)
 
 range* hosts_in_dc(range_request* rr, const char* dc)
 {
-    libcrange* lr = range_request_lr(rr);
+    librange* lr = range_request_lr(rr);
     set* dh = datacenter_hosts(lr);
     set_element* elt = set_get(dh, dc);
     if (elt)
@@ -151,7 +151,7 @@ range* hosts_in_dc(range_request* rr, const char* dc)
 
 const netblock* netblock_for_host(range_request* rr, const char* host)
 {
-    libcrange* lr = range_request_lr(rr);
+    librange* lr = range_request_lr(rr);
     set* hn = hosts_netblocks(lr);
     set_element* block = set_get(hn, host);
 
@@ -161,7 +161,7 @@ const netblock* netblock_for_host(range_request* rr, const char* host)
 
 const char* dc_for_host(range_request* rr, const char* host)
 {
-    libcrange* lr = range_request_lr(rr);
+    librange* lr = range_request_lr(rr);
     set* hd = hosts_dc(lr);
     set_element* dc = set_get(hd, host);
     if (dc) return dc->data;

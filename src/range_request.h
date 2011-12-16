@@ -9,11 +9,11 @@ Copyrights licensed under the New BSD License. See the accompanying LICENSE file
 #include "librange.h"
 
 /* range request interface to be used by modules and
- * internal libcrange functions */
+ * internal librange functions */
 
 struct range;
 
-range_request* range_request_new(libcrange* lr, apr_pool_t* pool);
+range_request* range_request_new(librange* lr, apr_pool_t* pool);
 void range_request_warn(range_request* rr, const char* fmt, ...);
 void range_request_warn_type(range_request* rr, const char* type, const char* node);
 int range_request_warn_enabled(range_request* rr);

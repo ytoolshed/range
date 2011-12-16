@@ -12,7 +12,7 @@
 
 static const char* nodescf_path = "/etc/range";
 
-const char** functions_provided(libcrange* lr)
+const char** functions_provided(librange* lr)
 {
     static const char* functions[] = {"mem", "cluster", "clusters",
                                       "group", "get_admin", "get_cluster",
@@ -25,7 +25,7 @@ const char** functions_provided(libcrange* lr)
 
     /* Next try variable from config file */
     if( ! altpath )
-        altpath = libcrange_getcfg(lr, "nodescf_path");
+        altpath = librange_getcfg(lr, "nodescf_path");
 
     /* If no alternative was specified, keep the default */
     if (altpath)
@@ -182,15 +182,15 @@ static vips* _parse_cluster_vips(range_request* rr, const char* cluster)
     FILE* fp;
     apr_pool_t* req_pool = range_request_pool(rr);
     apr_pool_t* lr_pool = range_request_lr_pool(rr);
-    libcrange* lr = range_request_lr(rr);
-    set* cache = libcrange_get_cache(lr, "nodescf:cluster_vips");
+    librange* lr = range_request_lr(rr);
+    set* cache = librange_get_cache(lr, "nodescf:cluster_vips");
     const char* vips_path = apr_psprintf(req_pool, "%s/%s/vips.cf",
                                          nodescf_path, cluster);
     vips* v;
     
     if (!cache) {
         cache = set_new(lr_pool, 0);
-        libcrange_set_cache(lr, "nodescf:cluster_vips", cache);
+        librange_set_cache(lr, "nodescf:cluster_vips", cache);
     }
 
     if (stat(vips_path, &st) == -1) {
@@ -409,8 +409,8 @@ static range* _expand_cluster(range_request* rr,
 {
     struct stat st;
     const char* res;
-    libcrange* lr = range_request_lr(rr);
-    set* cache = libcrange_get_cache(lr, "nodescf:cluster_keys");
+    librange* lr = range_request_lr(rr);
+    set* cache = librange_get_cache(lr, "nodescf:cluster_keys");
     apr_pool_t* req_pool = range_request_pool(rr);
     apr_pool_t* lr_pool = range_request_lr_pool(rr);
 
@@ -426,7 +426,7 @@ static range* _expand_cluster(range_request* rr,
     cluster_file = apr_psprintf(req_pool, "%s/%s/nodes.cf", nodescf_path, cluster);
     if (!cache) {
         cache = set_new(lr_pool, 0);
-        libcrange_set_cache(lr, "nodescf:cluster_keys", cache);
+        librange_set_cache(lr, "nodescf:cluster_keys", cache);
     }
 
     if (stat(cluster_file, &st) == -1) {

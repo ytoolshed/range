@@ -8,7 +8,7 @@
 #include "librange.h"
 #include "range.h"
 
-const char** functions_provided(libcrange* lr)
+const char** functions_provided(librange* lr)
 {
     static const char* functions[] = {"group", 0};
     return functions;
@@ -26,13 +26,13 @@ range* rangefunc_group(range_request* rr, range** r)
     sqlite3_stmt* tag_stmt;
     sqlite3_stmt* all_nodes_stmt;
     apr_pool_t* pool = range_request_pool(rr);
-    libcrange* lr = range_request_lr(rr);
+    librange* lr = range_request_lr(rr);
     
     ret = range_new(rr);
     members = range_get_hostnames(pool, r[0]);
 
-    if (!(db = libcrange_get_cache(lr, "sqlite:nodes"))) {
-	const char* sqlite_db_path = libcrange_getcfg(lr, "sqlitedb");
+    if (!(db = librange_get_cache(lr, "sqlite:nodes"))) {
+	const char* sqlite_db_path = librange_getcfg(lr, "sqlitedb");
 	if (!sqlite_db_path) sqlite_db_path = DEFAULT_SQLITE_DB;
 
 	err = sqlite3_open(sqlite_db_path, &db);
@@ -41,7 +41,7 @@ range* rangefunc_group(range_request* rr, range** r)
 	    return ret;
 	}
 
-	libcrange_set_cache(lr, "sqlite:nodes", db);
+	librange_set_cache(lr, "sqlite:nodes", db);
     }
 
 

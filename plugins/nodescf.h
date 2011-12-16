@@ -10,7 +10,7 @@
 #define EXCLUDE_RE "^\\s+EXCLUDE\\s+([^#\\s]+)"
 #define DOLLAR_RE "([^\\$]*)\\$(\\w+)"
 
-struct set *nodescf_read(libcrange *lr, char *filename, char *cname);
-int nodescf_replace_dollars(libcrange *lr, filecache *fc, char *clustername);
+struct set *nodescf_read(librange *lr, char *filename, char *cname);
+int nodescf_replace_dollars(librange *lr, filecache *fc, char *clustername);
 
 #endif

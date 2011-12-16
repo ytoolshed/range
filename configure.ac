@@ -23,7 +23,7 @@ AM_PROG_CC_C_O
 
 
 # begin perl checking
-perl_default="/usr/local/bin/perl"
+perl_default="/usr/bin/perl"
 AC_ARG_ENABLE(
   perl,
   AC_HELP_STRING([--enable-perl@<:@=PERL@:>@],
@@ -145,7 +145,6 @@ AC_CHECK_FUNCS([strerror])
 
 AC_CONFIG_FILES([Makefile
                  doc/Makefile
-                 m4/Makefile
                  src/Makefile
                  mod_range/Makefile
                  plugins/Makefile])
