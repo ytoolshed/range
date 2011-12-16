@@ -5,10 +5,10 @@
 #include <string.h>
 #include <assert.h>
 
-#define HOSTS_NETBLOCK_CACHE "yst-ip-list:hosts_netblocks"
-#define HOSTS_DC_CACHE "yst-ip-list:hosts_dc"
-#define DC_HOSTS_CACHE "yst-ip-list:dc_hosts"
-#define NETBLOCK_HOSTS_CACHE "yst-ip-list:netblocks_hosts"
+#define HOSTS_NETBLOCK_CACHE "ip-list:hosts_netblocks"
+#define HOSTS_DC_CACHE "ip-list:hosts_dc"
+#define DC_HOSTS_CACHE "ip-list:dc_hosts"
+#define NETBLOCK_HOSTS_CACHE "ip-list:netblocks_hosts"
 
 static void init_caches(librange* lr)
 {

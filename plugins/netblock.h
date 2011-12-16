@@ -5,7 +5,10 @@
 #include "range.h"
 #include "tinydns_ip.h"
 
-#define YST_IP_LIST "/etc/yst-ip-list"
+/* #define IP_LIST "/etc/ip-list" */
+#ifndef LIBRANGE_IP_LIST
+#error LIBRANGE_IP_LIST
+#endif
 
 typedef struct netblock
 {

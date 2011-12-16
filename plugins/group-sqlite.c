@@ -33,7 +33,7 @@ range* rangefunc_group(range_request* rr, range** r)
 
     if (!(db = librange_get_cache(lr, "sqlite:nodes"))) {
 	const char* sqlite_db_path = librange_getcfg(lr, "sqlitedb");
-	if (!sqlite_db_path) sqlite_db_path = DEFAULT_SQLITE_DB;
+	if (!sqlite_db_path) sqlite_db_path = LIBRANGE_SQLITE_DB;
 
 	err = sqlite3_open(sqlite_db_path, &db);
 	if (err != SQLITE_OK) {
