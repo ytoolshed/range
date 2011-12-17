@@ -18,10 +18,11 @@ int main(int argc, char const* const* argv)
     apr_pool_create(&pool, NULL);
 
     rr = range_expand(NULL, pool, argv[1]);
-    printf("%s\n", range_request_compressed(rr));
 
     if (range_request_has_warnings(rr))
-        printf("%s\n", range_request_warnings(rr));
+        fprintf(stderr, "%s\n", range_request_warnings(rr));
+
+    printf("%s\n", range_request_compressed(rr));
 
     apr_pool_destroy(pool);
     return 0;
