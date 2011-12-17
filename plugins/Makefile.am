@@ -18,7 +18,9 @@ pkglib_LTLIBRARIES = ip-list.la ip.la nodescf.la yamlfile.la sqlite.la
 sqlite_la_SOURCES = sqlite.c
 nodescf_la_SOURCES = nodescf.c
 yamlfile_la_SOURCES = yamlfile.c
-yst_ip_list_la_SOURCES = ip-list.c netblock.c tinydns_ip.c \
+ip_list_la_SOURCES = ip-list.c netblock.c tinydns_ip.c \
                          hosts-netblocks.c
 ip_la_SOURCES = ip.c tinydns_ip.c
 
+yamldir = $(LIBRANGE_YAML_DIR)
+yaml_DATA = example.foo.yaml example.bar.yaml

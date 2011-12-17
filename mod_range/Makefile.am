@@ -6,5 +6,8 @@ ACLOCAL_AMFLAGS = -I m4
 
 install:
 	@echo "*** installing apache module via apxs ***"
-	@APXS@ -i -a -n range libmodrange.so
+	@APXS@ -i -a -n range libmodrange.la
+	@echo "***"
 	@echo "*** NOTE: module installed but not configured, see mod_apache/README ***"
+	@echo "***"
+

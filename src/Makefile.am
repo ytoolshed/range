@@ -10,6 +10,9 @@ PATHDEFS = -DLIBRANGE_CONF=\"$(LIBRANGE_CONF)\" \
 AM_YFLAGS = -d
 AM_CFLAGS = -fPIC -Wall $(PATHDEFS)
 
+confdir = $(sysconfdir)
+conf_DATA = librange.conf.example
+
 bin_PROGRAMS = range
 
 range_SOURCES = main.c
