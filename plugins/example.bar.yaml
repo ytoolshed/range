@@ -1,0 +1,5 @@
+CLUSTER:
+  - "bar1..2.example.com"
+  - "%example.foo"
+APPS:
+  - mysql

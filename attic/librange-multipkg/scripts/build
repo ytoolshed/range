@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -e
+set -x
+
+aclocal || exit 1
+glibtoolize --force || exit 1
+autoheader || exit 1
+automake -a || exit 1
+autoconf || exit 1
+./configure --prefix=/usr || exit 1
+make || exit 1
+make install  || exit 1
+cd perl
+sh ./build || exit 1
+

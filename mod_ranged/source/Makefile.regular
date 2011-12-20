@@ -1,6 +1,0 @@
-all:
-	apxs -c mod_ranged.c -lcrange 
-
-install:
-	apxs -c -i mod_ranged.c -lcrange 
-	/etc/init.d/httpd restart

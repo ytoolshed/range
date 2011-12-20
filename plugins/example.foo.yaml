@@ -1,0 +1,4 @@
+CLUSTER: "host1..100.example.com"
+APPS:
+  - frontend
+  - backend
