@@ -112,6 +112,8 @@ else
 fi
 ])
 
+YAML_REQUIRE()
+
 # always need APR
 AC_CHECK_APR
 
