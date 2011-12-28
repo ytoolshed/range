@@ -1,7 +1,7 @@
 lib_LTLIBRARIES = libmodrange.la
 libmodrange_la_SOURCES = mod_range.c
 libmodrange_la_CFLAGS = @APR_CFLAGS@ -I@APACHE_INCDIR@ -I$(top_srcdir)/src
-libmodrange_la_LIBADD = -L$(libdir) -lrange
+libmodrange_la_LIBADD = -L$(top_srcdir)/src -L$(libdir) -lrange
 
 ACLOCAL_AMFLAGS = -I m4
 
