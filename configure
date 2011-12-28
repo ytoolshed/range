@@ -759,6 +759,9 @@ APR_LIBS_LD
 APR_LIBS
 APR_CFLAGS
 aprconfig
+YAML_LDFLAGS
+YAML_CPPFLAGS
+DISTCHECK_CONFIGURE_FLAGS
 WANT_MODRANGE_FALSE
 WANT_MODRANGE_TRUE
 WANT_PERL_FALSE
@@ -885,6 +888,7 @@ with_gnu_ld
 enable_libtool_lock
 enable_perl
 enable_mod_range
+with_yaml
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1535,6 +1539,7 @@ Optional Packages:
   --with-pic              try to use only PIC/non-PIC objects [default=use
                           both]
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
+  --with-yaml=DIR         prefix for LibYAML library and headers
 
 Some influential environment variables:
   YACC        The `Yet Another C Compiler' implementation to use. Defaults to
@@ -5526,13 +5531,13 @@ if test "${lt_cv_nm_interface+set}" = set; then :
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:5529: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:5534: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:5532: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:5537: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:5535: output\"" >&5)
+  (eval echo "\"\$as_me:5540: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -6737,7 +6742,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 6740 "configure"' > conftest.$ac_ext
+  echo '#line 6745 "configure"' > conftest.$ac_ext
   if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -8266,11 +8271,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8269: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8274: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:8273: \$? = $ac_status" >&5
+   echo "$as_me:8278: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8605,11 +8610,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8608: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8613: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:8612: \$? = $ac_status" >&5
+   echo "$as_me:8617: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8710,11 +8715,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8713: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8718: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8717: \$? = $ac_status" >&5
+   echo "$as_me:8722: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -8765,11 +8770,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8768: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8773: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8772: \$? = $ac_status" >&5
+   echo "$as_me:8777: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11149,7 +11154,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11152 "configure"
+#line 11157 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11245,7 +11250,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11248 "configure"
+#line 11253 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11639,6 +11644,123 @@ fi
 
 
 
+
+
+
+
+
+yaml_ver_major=0
+yaml_ver_minor=1
+yaml_ver_patch=1
+yaml_ver_str="$yaml_ver_major.$yaml_ver_minor.$yaml_ver_patch"
+
+# Check whether --with-yaml was given.
+if test "${with_yaml+set}" = set; then :
+  withval=$with_yaml;
+						DISTCHECK_CONFIGURE_FLAGS="$DISTCHECK_CONFIGURE_FLAGS '--with-yaml=$with_yaml'"
+
+
+fi
+
+# Search for LibYAML.
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LibYAML version >= $yaml_ver_str" >&5
+$as_echo_n "checking for LibYAML version >= $yaml_ver_str... " >&6; }
+if test "${yaml_cv_path+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+
+		ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+		yaml_cv_path=no
+		for yaml_dir in "$with_yaml" '' /usr/local /usr
+		do
+			yaml_save_CPPFLAGS="$CPPFLAGS"
+			yaml_save_LDFLAGS="$LDFLAGS"
+			if test x"$yaml_dir" != x
+			then
+				test -e "$yaml_dir/include/yaml.h" || continue
+				CPPFLAGS="$CPPFLAGS -I$yaml_dir/include"
+				LDFLAGS="$LDFLAGS -L$yaml_dir/lib -Wl,-rpath,$yaml_dir/lib -lyaml"
+			fi
+												                        for ac_header in yaml.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "yaml.h" "ac_cv_header_yaml_h" "$ac_includes_default"
+if test "x$ac_cv_header_yaml_h" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_YAML_H 1
+_ACEOF
+
+fi
+
+done
+
+			if test "$cross_compiling" = yes; then :
+  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "cannot run test program while cross compiling
+See \`config.log' for more details" "$LINENO" 5 ; }
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#include <yaml.h>
+
+int
+main ()
+{
+
+int ver_major = 0, ver_minor = 0, ver_patch = 0;
+yaml_get_version(&ver_major, &ver_minor, &ver_patch);
+if (ver_major < $yaml_ver_major) return 1;
+if (ver_minor < $yaml_ver_minor) return 1;
+if (ver_patch < $yaml_ver_patch) return 1;
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_run "$LINENO"; then :
+  yaml_cv_path=yes
+else
+  yaml_cv_path=no
+fi
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+
+			CPPFLAGS="$yaml_save_CPPFLAGS"
+			LDFLAGS="$yaml_save_LDFLAGS"
+			if test x"$yaml_cv_path" = xyes
+			then
+				yaml_cv_path="$yaml_dir"
+				break
+			fi
+		done
+		ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $yaml_cv_path" >&5
+$as_echo "$yaml_cv_path" >&6; }
+if test x"$yaml_cv_path" = xno
+then
+	as_fn_error $? "Could not find LibYAML version >= $yaml_ver_str; try using --with-yaml=/path/to/libyaml" "$LINENO" 5
+elif test x"$yaml_cv_path" = x
+then
+	YAML_CPPFLAGS=
+	YAML_LDFLAGS=
+else
+	YAML_CPPFLAGS="-I$yaml_cv_path/include"
+	YAML_LDFLAGS="-L$yaml_cv_path/lib -lyaml"
+fi
 
 
 
