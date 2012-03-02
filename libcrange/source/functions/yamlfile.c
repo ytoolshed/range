@@ -97,6 +97,43 @@ typedef struct cache_entry
     set* sections;
 } cache_entry;
 
+static char* _substitute_dollars(apr_pool_t* pool,
+                                 const char* cluster, const char* line)
+{
+    static char buf[262144];
+    char* dst = buf;
+    int len = strlen(cluster);
+    int in_regex = 0;
+    char c;
+    assert(line);
+    assert(cluster);
+
+    while ((c = *line) != '\0') {
+        if (!in_regex && c == '$') {
+            strcpy(dst, "cluster(");
+            dst += sizeof("cluster(") - 1;
+            strcpy(dst, cluster);
+            dst += len;
+            *dst++ = ':';
+            c = *++line;
+            while (isalnum(c) || c == '_') {
+                *dst++ = c;
+                c = *++line;
+            }
+            *dst++ = ')';
+        }
+        else if (c == '/') {
+            in_regex = !in_regex;
+            *dst++ = *line++;
+        }
+        else {
+            *dst++ = *line++;
+        }
+    }
+    *dst = '\0';
+    return buf;
+}
+
 char* _join_elements(apr_pool_t* pool, char sep, set* the_set)
 {
     set_element** members = set_members(the_set);
@@ -213,7 +250,8 @@ static set* _cluster_keys(range_request* rr, apr_pool_t* pool,
                     /* include it in () because we're going to comma it
                        together later */
                     *(char**)apr_array_push(working_range) =
-                        apr_psprintf(pool, "(%s)", node->data.scalar.value);
+                        apr_psprintf(pool, "(%s)", _substitute_dollars(pool,
+                          cluster, node->data.scalar.value));
                 }
             }
             /* glue the list items together with commas */
