@@ -73,15 +73,23 @@ range* range_evaluate(range_request* rr, const rangeast* ast)
             range_destroy(r2);
             return r;
         case AST_NOT:
-            r1 = range_from_group(rr, range_from_literal(rr, "ALL"));
+            ranges = (range **)apr_palloc(pool, sizeof(range *) * (2));
+            ranges[0] = range_from_literal(rr, "all:CLUSTER");
+            ranges[1] = NULL;
+            r1 = range_from_function(rr, "cluster", (const range**)ranges);
             r2 = range_evaluate(rr, ast->children);
             range_diff_inplace(rr, r1, r2);
             range_destroy(r2);
+            range_destroy(ranges[0]);
             return r1;
         case AST_REGEX:
-            r1 = range_from_group(rr, range_from_literal(rr, "ALL"));
+            ranges = (range **)apr_palloc(pool, sizeof(range *) * (2));
+            ranges[0] = range_from_literal(rr, "all:CLUSTER");
+            ranges[1] = NULL;
+            r1 = range_from_function(rr, "cluster", (const range**)ranges);
             r = range_from_match(rr, r1, ast->data.string);
             range_destroy(r1);
+            range_destroy(ranges[0]);
             return r;
         case AST_PARTS:
             r = range_from_rangeparts(rr, ast->data.parts);
