@@ -23,14 +23,14 @@ int main(int argc, char const* const* argv)
     while ((c = getopt (argc, argv, "e")) != -1) {
       switch (c)
       {
-	case 'e':
-	  expand_flag = 1;
-	  break;
-	case '?':
-	  fprintf (stderr, "Usage: crange [-e] <range>\n\n");
-	  return 1;
-	default:
-	  abort ();
+        case 'e':
+          expand_flag = 1;
+          break;
+        case '?':
+          fprintf (stderr, "Usage: crange [-e] <range>\n\n");
+          return 1;
+        default:
+          abort ();
       }
     }
 
@@ -43,14 +43,14 @@ int main(int argc, char const* const* argv)
     if (expand_flag == 1) {
       nodes = range_request_nodes(rr);
       while (*nodes) {
-	printf("%s\n", *nodes++);
+        printf("%s\n", *nodes++);
       }
     } else {
       printf("%s\n", range_request_compressed(rr));
     }
 
     if (range_request_has_warnings(rr))
-        printf("%s\n", range_request_warnings(rr));
+      printf("%s\n", range_request_warnings(rr));
 
     apr_pool_destroy(pool);
     return 0;
