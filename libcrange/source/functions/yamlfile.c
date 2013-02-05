@@ -71,6 +71,7 @@ static const char* yaml_path = LIBCRANGE_YAML_DIR;
 const char** functions_provided(libcrange* lr)
 {
     static const char* functions[] = {"mem", "cluster", "clusters",
+                                      "group",
                                       "get_cluster", "get_groups",
                                       "has", "allclusters", 0 };
 
@@ -608,4 +609,15 @@ range* rangefunc_get_groups(range_request* rr, range** r)
     return ret;
 }
 
+range* rangefunc_group(range_request* rr, range** r)
+{
+    range* ret = range_new(rr);
+    apr_pool_t* pool = range_request_pool(rr);
+    const char** groups = range_get_hostnames(pool, r[0]);
 
+    while (*groups) {
+        range_union_inplace(rr, ret, _expand_cluster(rr, "GROUPS", *groups));
+        ++groups;
+    }
+    return ret;
+}
