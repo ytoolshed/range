@@ -1,5 +1,5 @@
 /* yamlfile.c: yaml file cluster definiton support for range
-   adapted from nodescf.c ebourget@linkedin.com
+   adapted from nodescf.c ebourget@gmail.com
 
 Redistribution and use of this software in source and binary forms,
 with or without modification, are permitted provided that the following
@@ -583,32 +583,6 @@ range* rangefunc_clusters(range_request* rr, range** r)
     return ret;
 }
 
-range* rangefunc_get_groups(range_request* rr, range** r)
-{
-    range* ret = range_new(rr);
-    apr_pool_t* pool = range_request_pool(rr);
-    const char** nodes = range_get_hostnames(pool, r[0]);
-    const char** p_nodes = nodes;
-    set* node_cluster = _get_clusters(rr);
-    
-    while (*p_nodes) {
-        apr_array_header_t* clusters = set_get_data(node_cluster, *p_nodes);
-        if (!clusters)
-            range_request_warn_type(rr, "NO_CLUSTER", *p_nodes);
-        else {
-            /* get all */
-            int i;
-            for (i=0; i<clusters->nelts; ++i) {
-                const char* cluster = ((const char**)clusters->elts)[i];
-                range_add(ret, cluster);
-            }
-        }
-        ++p_nodes;
-    }
-
-    return ret;
-}
-
 range* rangefunc_group(range_request* rr, range** r)
 {
     range* ret = range_new(rr);
@@ -619,5 +593,49 @@ range* rangefunc_group(range_request* rr, range** r)
         range_union_inplace(rr, ret, _expand_cluster(rr, "GROUPS", *groups));
         ++groups;
     }
+    return ret;
+}
+
+range* rangefunc_get_groups(range_request* rr, range** r)
+{
+    range* n = r[0];
+    apr_pool_t* pool = range_request_pool(rr);
+    const char** in_nodes = range_get_hostnames(pool, n);
+
+    range* ret = range_new(rr);
+    set* node_group = set_new(pool, 40000);
+    range* groups_r = _expand_cluster(rr, "GROUPS", "KEYS");
+    const char** groups = range_get_hostnames(pool, groups_r);
+    const char** p_group = groups;
+
+    while (*p_group) {
+        range* nodes_r = _expand_cluster(rr, "GROUPS", *p_group);
+        const char** nodes = range_get_hostnames(pool, nodes_r);
+        const char** p_nodes = nodes;
+
+        while (*p_nodes) {
+            apr_array_header_t* my_groups = set_get_data(node_group, *p_nodes);
+            if (!my_groups) {
+                my_groups = apr_array_make(pool, 4, sizeof(char*));
+                set_add(node_group, *p_nodes, my_groups);
+            }
+            *(const char**)apr_array_push(my_groups) = *p_group;
+            ++p_nodes;
+        }
+        ++p_group;
+    }
+
+    while (*in_nodes) {
+        apr_array_header_t* my_groups = set_get_data(node_group, *in_nodes);
+        if (!my_groups) 
+            range_request_warn_type(rr, "NO_GROUPS", *in_nodes);
+        else {
+            int i;
+            for (i=0; i<my_groups->nelts; ++i)
+                range_add(ret, ((const char**)my_groups->elts)[i]);
+        }
+        in_nodes++;
+    }
+
     return ret;
 }
