@@ -16,6 +16,7 @@ import yaml
 # Local
 import seco.range.sync.local
 import seco.range.sync.svn
+import seco.range.sync.http
 import seco.range.sync.index
 import seco.range.sync.version
 
