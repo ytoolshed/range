@@ -1,0 +1,139 @@
+#!/usr/bin/python
+'''
+A generic framework for running plugins to collect range data and syncing it
+based on a linear precedence
+'''
+
+# Core
+import argparse
+import logging
+import os
+import sys
+import gc
+
+# 3rd party
+import yaml
+
+# local
+import seco.range.sync as range_sync
+
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger(sys.argv[0])
+
+def read_config(conf_file):
+  """
+  Read in the range sync config file and verify that some base level of info
+  is there
+  """
+  config = None
+  if os.path.isfile(conf_file):
+    config = yaml.load(open(conf_file).read())
+
+  if 'modules' not in config or 'immutables' not in config:
+    sys.stderr.write('{0} does not contain a "modules" or "immutables" section'.format(
+      conf_file))
+    sys.exit(1)
+
+  if 'output' not in config:
+    sys.stderr.write('{0} does not contain an "output" section'.format(conf_file))
+    sys.exit(1)
+
+  return config
+
+def parse_cli(cmd_args):
+  """
+  Parse the command line arguments to range_sync
+  """
+  parser = argparse.ArgumentParser(description=__doc__)
+
+  parser.add_argument('-c', '--config', default='/etc/range/range-sync.conf',
+      help='The config file for range-sync')
+
+  noise_group = parser.add_mutually_exclusive_group()
+  noise_group.add_argument('-d', '--debug', default=False, action='store_true',
+      help='Debug level output')
+  noise_group.add_argument('-v', '--verbose', default=False, action='store_true',
+      help='Verbose output')
+  noise_group.add_argument('-q', '--quiet', default=False, action='store_true',
+      help='Only critical output')
+
+  return parser.parse_args(cmd_args)
+
+def run_mod(mod_name, config):
+  """
+  Run the module's plugin with the arguments
+  """
+  log.debug("Running {0}".format(mod_name))
+  mod_config = config.get(mod_name)
+  bail = mod_config.get('disable', False)
+  if bail:
+    log.info("{0} module is disabled".format(mod_name))
+    return {}
+  plugin = mod_config['plugin']
+  plugin = getattr(range_sync, plugin, None)
+  if not plugin:
+    log.critical("No plugin named {0}".format(mod_config['plugin']))
+    return {}
+  return plugin.sync(mod_config)
+
+def main(cmd_args):
+  """
+  The main loop, do all the stuff that should be done here
+  """
+  cmd_args = parse_cli(cmd_args)
+  config = read_config(cmd_args.config)
+  no_clean = config.get('output', {}).get('protected', [])
+
+  global log
+  if cmd_args.debug:
+    # Explictly set to debug just for code clarity
+    log.setLevel(logging.DEBUG)
+  elif cmd_args.verbose:
+    log.setLevel(logging.INFO)
+  elif cmd_args.quiet:
+    log.setLevel(logging.CRITICAL)
+  else:
+    # Fall back to the expected default
+    log.setLevel(logging.WARNING)
+
+  range_data = {}
+  # Run the modules
+  for mod in config.get('modules', []):
+    # Need to disable gc before the module is run.
+    # Some modules use the http lib which is causing some issues.
+    # This is a brute force approach.
+    # Need to do something more elegant in the future.
+    # Same is done below for immutables.
+    log.debug("Disabling garbage collection before: {0}".format(mod))
+    gc.disable()
+    mod_ret = run_mod(mod, config)
+    range_data = range_sync.range_data_merge(range_data, mod_ret)
+    gc.enable()
+    log.debug("Enabled garbage collection after: {0}".format(mod))
+
+  # Run the immutables
+  for immut in config.get('immutables', []):
+    # RE: gc.disable() -> see note above
+    log.debug("Disabling garbage collection before: {0}".format(immut))
+    gc.disable()
+    immut_ret = run_mod(immut, config)
+    range_data = range_sync.range_data_override(range_data, immut_ret)
+    gc.enable()
+    log.debug("Enabled garbage collection after: {0}".format(immut))
+
+  # Write the output
+  outdir = range_sync.norm_file(config['output']['dir'])
+  log.info("Writing range files out to {0}".format(outdir))
+  range_sync.outputter(range_data, outdir, protected=no_clean)
+
+  # Run post
+  for post in config.get('post', []):
+    post_ret = run_mod(post, config)
+    range_data = range_sync.range_data_nomerge(range_data, post_ret)
+    log.info("Writing post-enhanced range file for {0} out to {1}".format(post, outdir))
+    range_sync.outputter(range_data, outdir, clean=False)
+
+
+
+if __name__ == '__main__':
+  main(sys.argv[1:])
