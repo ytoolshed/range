@@ -28,9 +28,12 @@ def read_config(conf_file):
   config = None
   if os.path.isfile(conf_file):
     config = yaml.load(open(conf_file).read())
+  else:
+    sys.stderr.write('No config file found at {0}\n'.format(conf_file))
+    sys.exit(1)
 
   if 'modules' not in config or 'immutables' not in config:
-    sys.stderr.write('{0} does not contain a "modules" or "immutables" section'.format(
+    sys.stderr.write('{0} does not contain a "modules" or "immutables" section\n'.format(
       conf_file))
     sys.exit(1)
 

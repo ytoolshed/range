@@ -15,7 +15,8 @@ import yaml
 
 # Local
 import seco.range.sync.local
-import seco.range.sync.svn
+#import seco.range.sync.svn
+import seco.range.sync.git_sync
 import seco.range.sync.http
 import seco.range.sync.index
 import seco.range.sync.version
@@ -81,6 +82,7 @@ def norm_string(range_val):
   then put it in a q()
   """
   re_badchars = re.compile(r'[\s\/]')
+  re_minus = re.compile(r'((\S)+ - (\S)+)+')
   re_quoted = re.compile(r'^q\(.*\)$')
   re_int_parens = re.compile(r'[\(\)]')
   re_l_paren = re.compile(r'\(')
@@ -94,7 +96,8 @@ def norm_string(range_val):
 
   # Look for spaces and slashes, if they exist, wrap in a q()
   if re_badchars.search(range_val) and not re_quoted.match(range_val):
-    range_val = 'q(%s)' % range_val
+    if not re_minus.match(range_val):
+      range_val = 'q(%s)' % range_val
 
   return range_val
 
