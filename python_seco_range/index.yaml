@@ -2,7 +2,7 @@ default:
   name: python-seco-range
   arch: noarch
   version: '1.0'
-  require:
+  requires:
     - GitPython
     - PyYAML
     - python-BeautifulSoup4
