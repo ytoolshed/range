@@ -2,3 +2,10 @@ default:
   name: python-seco-range
   arch: noarch
   version: '1.0'
+  require:
+    - GitPython
+    - PyYAML
+    - python-BeautifulSoup4
+    - python-argparse
+    - python-requests
+    - pysvn
