@@ -3,8 +3,8 @@
 
 #include "libcrange.h"
 
-#define A_RE "^\\+([^:]+):([^:]+):0"
-#define CNAME_RE "^C([^:]+):([^:]+)\\.:0"
+#define A_RE "^\\+([^:]+):([^:]+):\\d+"
+#define CNAME_RE "^C([^:]+):([^:]+)\\.:\\d+"
 #define DNS_FILE "/export/crawlspace/tinydns-data/root/data"
 
 typedef struct ip
