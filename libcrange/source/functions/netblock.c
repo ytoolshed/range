@@ -46,6 +46,8 @@ static set* read_netblocks(libcrange* lr)
     int line_no;
     apr_pool_t* pool;
     range_request* rr;
+    const char* yst_ip_list = libcrange_getcfg(lr, "yst_ip_list");
+    if (!yst_ip_list) yst_ip_list = YST_IP_LIST;
     
     if ((result = libcrange_get_cache(lr, NET_COLO_CACHE)) != 0)
         return result;
@@ -55,9 +57,9 @@ static set* read_netblocks(libcrange* lr)
     result = set_new(pool, 0);
     colo_nets = set_new(pool, 0);
 
-    fp = fopen(YST_IP_LIST, "r");
+    fp = fopen(yst_ip_list, "r");
     if (!fp) {
-        fprintf(stderr, "%s: %s", YST_IP_LIST,
+        fprintf(stderr, "%s: %s", yst_ip_list,
                 strerror(errno));
         return set_new(pool, 0);
     }
@@ -84,7 +86,7 @@ static set* read_netblocks(libcrange* lr)
         n = strlen(p);
         if (p[n - 1] != '\n') {
             fprintf(stderr, "%s: line %d is too long.\n",
-                    YST_IP_LIST, line_no);
+                    yst_ip_list, line_no);
             fclose(fp);
             return set_new(pool, 0);
         }
