@@ -402,7 +402,12 @@ range* rangefunc_allclusters(range_request* rr, range** r)
 range* rangefunc_has(range_request* rr, range** r)
 {
     range* ret = range_new(rr);
+    if (!validate_range_args(rr, r, 2)) {
+        return ret;
+    }
+
     apr_pool_t* pool = range_request_pool(rr);
+
     const char** tag_names = range_get_hostnames(pool, r[0]);
     const char** tag_values = range_get_hostnames(pool, r[1]);
 
@@ -432,6 +437,10 @@ range* rangefunc_has(range_request* rr, range** r)
 range* rangefunc_mem(range_request* rr, range** r)
 {
     range* ret = range_new(rr);
+    if (!validate_range_args(rr, r, 2)) {
+        return ret;
+    }
+
     apr_pool_t* pool = range_request_pool(rr);
     const char** clusters = range_get_hostnames(pool, r[0]);
     const char* cluster = clusters[0];
@@ -461,6 +470,10 @@ range* rangefunc_mem(range_request* rr, range** r)
 range* rangefunc_cluster(range_request* rr, range** r)
 {
     range* ret = range_new(rr);
+    if (!validate_range_args(rr, r, 1)) {
+        return ret;
+    }
+
     apr_pool_t* pool = range_request_pool(rr);
     const char** clusters = range_get_hostnames(pool, r[0]);
     const char** p = clusters;
@@ -535,6 +548,9 @@ static set* _get_clusters(range_request* rr)
 range* rangefunc_get_cluster(range_request* rr, range** r)
 {
     range* ret = range_new(rr);
+    if (!validate_range_args(rr, r, 1)) {
+        return ret;
+    }
     apr_pool_t* pool = range_request_lr_pool(rr);
     const char** nodes = range_get_hostnames(pool, r[0]);
     const char** p_nodes = nodes;
@@ -559,6 +575,9 @@ range* rangefunc_get_cluster(range_request* rr, range** r)
 range* rangefunc_clusters(range_request* rr, range** r)
 {
     range* ret = range_new(rr);
+    if (!validate_range_args(rr, r, 1)) {
+        return ret;
+    }
     apr_pool_t* pool = range_request_pool(rr);
     const char** nodes = range_get_hostnames(pool, r[0]);
     const char** p_nodes = nodes;
@@ -597,11 +616,14 @@ range* rangefunc_group(range_request* rr, range** r)
 
 range* rangefunc_get_groups(range_request* rr, range** r)
 {
+    range* ret = range_new(rr);
+    if (!validate_range_args(rr, r, 1)) {
+        return ret;
+    }
     range* n = r[0];
     apr_pool_t* pool = range_request_pool(rr);
     const char** in_nodes = range_get_hostnames(pool, n);
 
-    range* ret = range_new(rr);
     set* node_group = set_new(pool, 40000);
     range* groups_r = _expand_cluster(rr, "GROUPS", "KEYS");
     const char** groups = range_get_hostnames(pool, groups_r);

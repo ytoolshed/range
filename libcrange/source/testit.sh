@@ -33,4 +33,26 @@ is(
   '@bar',
   );
 
+is(
+  `crange  -c /home/eam/prefix/etc/range.conf -e  'has(bar;foo1.example.com)'`,
+  qq{GROUPS\n},
+  'has(bar;foo1.example.com) # should work',
+  );
+
+my @arg_needing_funcs = qw(
+  mem cluster clusters group get_cluster get_groups has 
+);
+
+my @single_arg_funcs = qw(
+  allclusters vlan dc hosts_v hosts_dc vlans_dc ip group 
+);
+
+for my $func (@arg_needing_funcs) {
+  is(
+    `crange  -c /home/eam/prefix/etc/range.conf -e '$func()'`,
+    qq{},
+    "$func() # should return empty",
+    );
+}
+
 done_testing();

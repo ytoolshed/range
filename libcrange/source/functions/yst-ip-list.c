@@ -16,6 +16,9 @@ const char** functions_provided(libcrange* lr)
 range* rangefunc_vlans_dc(range_request* rr, range** r)
 {
     range* result = range_new(rr);
+    if (!validate_range_args(rr, r, 1)) {
+        return result;
+    }
     apr_pool_t* pool = range_request_pool(rr);
     const char** members = range_get_hostnames(pool, r[0]);
     int i;
@@ -29,8 +32,11 @@ range* rangefunc_vlans_dc(range_request* rr, range** r)
 
 range* rangefunc_hosts_dc(range_request* rr, range** r)
 {
-    int i;
     range* result = range_new(rr);
+    if (!validate_range_args(rr, r, 1)) {
+        return result;
+    }
+    int i;
     apr_pool_t* pool = range_request_pool(rr);
     const char** members = range_get_hostnames(pool, r[0]);
 
@@ -43,8 +49,11 @@ range* rangefunc_hosts_dc(range_request* rr, range** r)
 
 range* rangefunc_hosts_v(range_request* rr, range** r)
 {
-    int i;
     range* result = range_new(rr);
+    if (!validate_range_args(rr, r, 1)) {
+        return result;
+    }
+    int i;
     apr_pool_t* pool = range_request_pool(rr);
     const char** members = range_get_hostnames(pool, r[0]);
 
@@ -60,13 +69,15 @@ range* rangefunc_hosts_v(range_request* rr, range** r)
 
 range* rangefunc_vlan(range_request* rr, range** r)
 {
-    range* ret;
+    range* ret = range_new(rr);
+    if (!validate_range_args(rr, r, 1)) {
+        return ret;
+    }
     const char** members;
     apr_pool_t* pool = range_request_pool(rr);
     int i;
 
     members = range_get_hostnames(pool, r[0]);
-    ret = range_new(rr);
     ret->quoted = 1;
 
     for (i = 0; members[i]; ++i) { /* for each node */
@@ -83,13 +94,15 @@ range* rangefunc_vlan(range_request* rr, range** r)
 
 range* rangefunc_dc(range_request* rr, range **r)
 {
-    range* ret;
+    range *ret = range_new(rr);
+    if (!validate_range_args(rr, r, 1)) {
+        return ret;
+    }
     const char** members;
     apr_pool_t* pool = range_request_pool(rr);
     int i;
 
     members = range_get_hostnames(pool, r[0]);
-    ret = range_new(rr);
 
     for (i = 0; members[i]; ++i) { /* for each node */
         const char* node = members[i];

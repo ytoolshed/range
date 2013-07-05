@@ -97,4 +97,7 @@ range* range_from_set(range_request* rr, set* s);
 
 void range_destroy(range* r);
 
+int validate_range_args(range_request* rr, range** r, int expected_ranges);
+
+
 #endif

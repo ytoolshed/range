@@ -428,3 +428,23 @@ range* range_from_function(range_request* rr,
     }
     return ret;
 }
+
+/* true iif range **r has exactly expected_ranges elements before its null termination */
+int validate_range_args(range_request* rr, range** r, int expected_ranges) {
+    int i=0;
+    if (0 == expected_ranges && NULL == r[1]) {
+        // even 0 range functions have an arg. FIXME- why is this?
+        return 1;
+    }
+    for (i=0; i < expected_ranges; i++) {
+        if (NULL == r[i]) {
+            /* not enough args*/
+            return 0;
+        }
+    }
+    if (NULL != r[i]) {
+        /* too many args */
+        return 0;
+    }
+    return 1;
+}

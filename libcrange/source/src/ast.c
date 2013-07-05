@@ -111,8 +111,10 @@ range* range_evaluate(range_request* rr, const rangeast* ast)
             ranges = (range **)apr_palloc(pool, sizeof(range *) * (i+1));
             ranges[i] = NULL;
             i=0;
-            for (rtmp = ast->children; rtmp; rtmp = rtmp->next)
+            for (rtmp = ast->children; rtmp; rtmp = rtmp->next) {
                 ranges[i++] = range_evaluate(rr, rtmp);
+            }
+            ranges[i++] = NULL;
 
             r = range_from_function(rr, ast->data.string, (const range**)ranges);
             for (i=0; ranges[i]; i++) range_destroy(ranges[i]);
