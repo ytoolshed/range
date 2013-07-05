@@ -115,8 +115,8 @@ int add_functions_from_perlmodule(libcrange* lr, apr_pool_t* pool,
             /* perl_inc_path is /foo:/bar. split it and insert it onto @INC in a BEGIN block
                Explicitly not concerned about rogue code - this value is from the system config
             */
-	    strncat(perlboot, "BEGIN { my @paths = split ':', q{", sizeof(perlboot));
-	    strncat(perlboot, perl_inc_path, sizeof(perlboot));
+            strncat(perlboot, "BEGIN { my @paths = split ':', q{", sizeof(perlboot));
+            strncat(perlboot, perl_inc_path, sizeof(perlboot));
             strncat(perlboot, "}; push @INC, @paths; }\n", sizeof(perlboot));
         }
         strncat(perlboot, PERLBOOT, sizeof(perlboot));
