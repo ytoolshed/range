@@ -19,9 +19,9 @@ Copyrights licensed under the New BSD License. See the accompanying LICENSE file
 
 #define PERLBOOT                                                        \
     "use strict;"                                                       \
-    "use lib qw(" QUOTEME(MODULE_PATH) ");"                                  \
-    "BEGIN{ push @INC, $ENV{PERLLIB} if $ENV{PERLLIB} };"                                  \
-    "BEGIN{ push @INC, $ENV{PERL5LIB} if $ENV{PERL5LIB} };"                                  \
+    "use lib qw(" QUOTEME(MODULE_PATH) ");"                             \
+    "BEGIN{ push @INC, $ENV{PERLLIB} if $ENV{PERLLIB} };"               \
+    "BEGIN{ push @INC, $ENV{PERL5LIB} if $ENV{PERL5LIB} };"             \
     "our %_FUNCTIONS;"                                                  \
     "sub ::libcrange_load_file {  my ( $lib, $prefix, $module ) = @_;"  \
     "  require qq($module.pm);"                                         \
@@ -104,11 +104,23 @@ int add_functions_from_perlmodule(libcrange* lr, apr_pool_t* pool,
     const char** exported_functions;
     const char** p;
     const char* module_copy = apr_pstrdup(pool, module);
+    char *perl_inc_path = 0;
+    char perlboot[4096] = ""; /* bigger than PERLBOOT + @INC paths */
 
     PerlInterpreter* org_perl = PERL_GET_CONTEXT;
 
     if (!perl_interp) {
-        char* args[] = { "", "-e", PERLBOOT };
+        perl_inc_path = libcrange_getcfg(lr, "perl_inc_path");
+        if (perl_inc_path) {
+            /* perl_inc_path is /foo:/bar. split it and insert it onto @INC in a BEGIN block
+               Explicitly not concerned about rogue code - this value is from the system config
+            */
+	    strncat(perlboot, "BEGIN { my @paths = split ':', q{", sizeof(perlboot));
+	    strncat(perlboot, perl_inc_path, sizeof(perlboot));
+            strncat(perlboot, "}; push @INC, @paths; }\n", sizeof(perlboot));
+        }
+        strncat(perlboot, PERLBOOT, sizeof(perlboot));
+        char* args[] = { "", "-e", perlboot };
 
         perl_interp = perl_alloc();
         perl_construct(perl_interp);

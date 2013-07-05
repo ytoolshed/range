@@ -418,12 +418,11 @@ char* set_dump(const set* s)
     fprintf(stderr, "Members: %ld\n", (long)s->members);
     memb = set_members(s);
     for (i=0; memb[i]; i++) {
-        fprintf(stderr, " - %s\n", memb[i]->name);
+        fprintf(stderr, " - %s => %s\n", memb[i]->name, (char*)set_get_data(s, memb[i]->name));
     }
     return "";
 }
 
-#if defined(DEBUG_HASH)
 void dump_hash_values(const set* s)
 {
     int i;
@@ -438,8 +437,5 @@ void dump_hash_values(const set* s)
         }
         max_chain = max_chain < this_chain ? this_chain : max_chain;
     }
-    printf("DEBUG: %d %d %d %d\n", used, s->members, s->hashsize, max_chain);
+    printf("DEBUG: dump_hash_values: used: %d, s->members: %d, s->hashsize: %d, s->max_chain: %d\n", used, s->members, s->hashsize, max_chain);
 }
-
-#endif
-

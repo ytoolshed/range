@@ -83,7 +83,6 @@ const char** functions_provided(libcrange* lr)
     /* Next try variable from config file */
     if( ! altpath )
         altpath = libcrange_getcfg(lr, "yaml_path");
-
     /* If no alternative was specified, keep the default */
     if (altpath)
         yaml_path = altpath;

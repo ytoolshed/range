@@ -54,12 +54,18 @@ int main(int argc, char const* const* argv)
     debug && printf("DEBUG: using config_file of '%s'\n", config_file);
     lr = libcrange_new(pool, config_file);
 
-    debug && printf("DEBUG: after libcrange_new have an lr with attrs:\n");
-    debug && printf("DEBUG: lr->default_domain: %s\n", lr->default_domain);
-    debug && printf("DEBUG: lr->confdir: %s\n", lr->confdir);
-    debug && printf("DEBUG: lr->config_file: %s\n", lr->config_file);
-    debug && printf("DEBUG: lr->funcdir: %s\n", lr->funcdir);
-    debug && printf("DEBUG: lr->want_caching: %d\n", lr->want_caching);
+    if (debug) {
+        printf("DEBUG: after libcrange_new have an lr with attrs:\n");
+        printf("DEBUG: lr->default_domain: %s\n", lr->default_domain);
+        printf("DEBUG: lr->confdir: %s\n", lr->confdir);
+        printf("DEBUG: lr->config_file: %s\n", lr->config_file);
+        printf("DEBUG: lr->funcdir: %s\n", lr->funcdir);
+        printf("DEBUG: lr->want_caching: %d\n", lr->want_caching);
+        dump_hash_values(lr->vars);
+        fprintf(stderr, "DEBUG: lr->vars: ");
+        set_dump(lr->vars);
+    }
+
     rr = range_expand(lr, pool, argv[argc-1]);
     if (expand_flag == 1) {
       nodes = range_request_nodes(rr);
