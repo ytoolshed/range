@@ -15,9 +15,18 @@ extern "C"
 
 #define LIBCRANGE_VERSION "1.0"
 
-//#define LIBCRANGE_CONF "/usr/local/etc/libcrange.conf"
-//#define DEFAULT_SQLITE_DB "/usr/local/var/libcrange/range.sqlite"
-//#define LIBCRANGE_FUNCDIR "/usr/lib/libcrange"
+/* These are almost certainly overridden at build time */
+#ifndef LIBCRANGE_CONF
+ #define LIBCRANGE_CONF "/usr/local/etc/libcrange.conf"
+#endif
+
+#ifndef DEFAULT_SQLITE_DB
+ #define DEFAULT_SQLITE_DB "/usr/local/var/libcrange/range.sqlite"
+#endif
+
+#ifndef LIBCRANGE_FUNCDIR
+ #define LIBCRANGE_FUNCDIR "/usr/lib/libcrange"
+#endif
 
 struct libcrange;
 typedef struct libcrange libcrange;

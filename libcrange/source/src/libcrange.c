@@ -265,7 +265,16 @@ static int add_functions_from_module(libcrange* lr, set* functions,
     char filename[512];
     const char** all_functions;
 
-    snprintf(filename, sizeof filename, "%s/%s.so", lr->funcdir, module);
+    snprintf(filename,
+             sizeof filename,
+             "%s/%s.so",
+             /* if absolute path, don't use funcdir
+ *              bit of a hack. FIXME need better handling
+ *              for setting funcdir and other implied paths
+ *              in the conf
+             */
+             module[0] == '/' ? "" : lr->funcdir,
+             module);
     filename[sizeof filename - 1] = '\0';
 
     if (access(filename, R_OK) != 0) {

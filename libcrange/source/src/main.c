@@ -5,6 +5,7 @@ Copyrights licensed under the New BSD License. See the accompanying LICENSE file
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <getopt.h>
 #include "libcrange.h"
 #include <apr_pools.h>
 
@@ -15,16 +16,25 @@ int main(int argc, char const* const* argv)
     const char **nodes;
     int expand_flag = 0;
     int c;
+    int debug = 0;
+    struct libcrange *lr;
+    char *config_file = NULL;
 
     apr_app_initialize(&argc, &argv, NULL);
     atexit(apr_terminate);
     apr_pool_create(&pool, NULL);
 
-    while ((c = getopt (argc, argv, "e")) != -1) {
+    while ((c = getopt (argc, argv, "edc:")) != -1) {
       switch (c)
       {
         case 'e':
           expand_flag = 1;
+          break;
+        case 'd':
+          debug = 1;
+          break;
+        case 'c':
+          config_file = optarg;
           break;
         case '?':
           fprintf (stderr, "Usage: crange [-e] <range>\n\n");
@@ -34,12 +44,18 @@ int main(int argc, char const* const* argv)
       }
     }
 
-    if (argc > 3) {
-      fprintf (stderr, "Usage: crange [-e] <range>\n\n");
+    debug && printf("DEBUG: argc: %d and optind: %d\n", argc, optind);
+    if (optind + 1 != argc) {
+      fprintf (stderr, "Usage: crange [-e] [-c] <range>\n\n");
       return 1;
     }
 
-    rr = range_expand(NULL, pool, argv[argc-1]);
+    config_file = config_file ? config_file : LIBCRANGE_CONF;
+    debug && printf("DEBUG: using config_file of '%s'\n", config_file);
+    lr = libcrange_new(pool, config_file);
+
+    debug && printf("DEBUG: after libcrange_new have an lr with attrs <FIXME>\n");
+    rr = range_expand(lr, pool, argv[argc-1]);
     if (expand_flag == 1) {
       nodes = range_request_nodes(rr);
       while (*nodes) {
