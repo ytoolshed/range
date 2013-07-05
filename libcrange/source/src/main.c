@@ -54,7 +54,7 @@ int main(int argc, char const* const* argv)
     debug && printf("DEBUG: using config_file of '%s'\n", config_file);
     lr = libcrange_new(pool, config_file);
 
-    debug && printf("DEBUG: after libcrange_new have an lr with attrs <FIXME>\n");
+    debug && printf("DEBUG: after libcrange_new have an lr with attrs:\n");
     debug && printf("DEBUG: lr->default_domain: %s\n", lr->default_domain);
     debug && printf("DEBUG: lr->confdir: %s\n", lr->confdir);
     debug && printf("DEBUG: lr->config_file: %s\n", lr->config_file);

@@ -20,6 +20,8 @@ Copyrights licensed under the New BSD License. See the accompanying LICENSE file
 #define PERLBOOT                                                        \
     "use strict;"                                                       \
     "use lib qw(" QUOTEME(MODULE_PATH) ");"                                  \
+    "BEGIN{ push @INC, $ENV{PERLLIB} if $ENV{PERLLIB} };"                                  \
+    "BEGIN{ push @INC, $ENV{PERL5LIB} if $ENV{PERL5LIB} };"                                  \
     "our %_FUNCTIONS;"                                                  \
     "sub ::libcrange_load_file {  my ( $lib, $prefix, $module ) = @_;"  \
     "  require qq($module.pm);"                                         \

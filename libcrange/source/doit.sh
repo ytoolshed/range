@@ -19,11 +19,15 @@ cd perl
 sh ./build || exit 1
 cd ..
 
+cp -a ../root/* $DESTDIR/
+
 # hacks to get config going
-mkdir $DESTDIR/etc
+#mkdir $DESTDIR/etc
 # cp ../root/etc/libcrange.conf.example $DESTDIR/etc/range.conf 
 
 echo loadmodule $DESTDIR/usr/lib/libcrange/ip >>  $DESTDIR/etc/range.conf 
 echo loadmodule $DESTDIR/usr/lib/libcrange/yst-ip-list >>  $DESTDIR/etc/range.conf 
 echo loadmodule $DESTDIR/usr/lib/libcrange/nodescf >>  $DESTDIR/etc/range.conf 
+echo perlmodule LibrangeUtils >>  $DESTDIR/etc/range.conf
+echo perlmodule LibrangeAdminscf >> $DESTDIR/etc/range.conf
 
