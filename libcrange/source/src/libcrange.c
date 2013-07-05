@@ -37,7 +37,7 @@ libcrange* libcrange_new(apr_pool_t* pool, const char* config_file)
     lr = apr_palloc(pool, sizeof(libcrange));
     lr->pool = pool;
     lr->caches = set_new(pool, 0);
-    lr->default_domain = "inktomisearch.com";
+    lr->default_domain = NULL;
     lr->funcdir = LIBCRANGE_FUNCDIR;
     lr->want_caching = 1;
     lr->config_file = config_file ? config_file : LIBCRANGE_CONF;
