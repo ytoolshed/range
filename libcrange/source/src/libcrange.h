@@ -7,6 +7,7 @@ Copyrights licensed under the New BSD License. See the accompanying LICENSE file
 #define LIBCRANGE_H
 
 #include <apr_pools.h>
+#include "set.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -28,8 +29,20 @@ extern "C"
  #define LIBCRANGE_FUNCDIR "/usr/lib/libcrange"
 #endif
 
-struct libcrange;
-typedef struct libcrange libcrange;
+typedef struct libcrange {
+    set* caches;
+    set* functions;
+    set* perl_functions;
+    set* vars;
+
+    apr_pool_t* pool;
+    const char* default_domain;
+    const char* confdir;
+    const char* config_file;
+    const char* funcdir;
+    int want_caching;
+} libcrange;
+
 
 struct range_request;
 typedef struct range_request range_request;

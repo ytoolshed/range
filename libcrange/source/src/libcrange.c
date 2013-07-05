@@ -23,21 +23,6 @@ Copyrights licensed under the New BSD License. See the accompanying LICENSE file
 libcrange* static_lr = NULL;
 static int initd = 0;
 
-struct libcrange
-{
-    set* caches;
-    set* functions;
-    set* perl_functions;
-    set* vars;
-
-    apr_pool_t* pool;
-    const char* default_domain;
-    const char* confdir;
-    const char* config_file;
-    const char* funcdir;
-    int want_caching;
-};
-
 static int parse_config_file(libcrange* lr);
 libcrange* libcrange_new(apr_pool_t* pool, const char* config_file)
 {

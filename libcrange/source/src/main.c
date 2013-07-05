@@ -55,6 +55,11 @@ int main(int argc, char const* const* argv)
     lr = libcrange_new(pool, config_file);
 
     debug && printf("DEBUG: after libcrange_new have an lr with attrs <FIXME>\n");
+    debug && printf("DEBUG: lr->default_domain: %s\n", lr->default_domain);
+    debug && printf("DEBUG: lr->confdir: %s\n", lr->confdir);
+    debug && printf("DEBUG: lr->config_file: %s\n", lr->config_file);
+    debug && printf("DEBUG: lr->funcdir: %s\n", lr->funcdir);
+    debug && printf("DEBUG: lr->want_caching: %d\n", lr->want_caching);
     rr = range_expand(lr, pool, argv[argc-1]);
     if (expand_flag == 1) {
       nodes = range_request_nodes(rr);
