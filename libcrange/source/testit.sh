@@ -41,10 +41,11 @@ is(
 
 my @arg_needing_funcs = qw(
   mem cluster clusters group get_cluster get_groups has 
+  vlan dc hosts_v hosts_dc vlans_dc ip group
 );
 
-my @single_arg_funcs = qw(
-  allclusters vlan dc hosts_v hosts_dc vlans_dc ip group 
+my @no_arg_funcs = qw(
+  allclusters 
 );
 
 for my $func (@arg_needing_funcs) {
