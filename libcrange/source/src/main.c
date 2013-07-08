@@ -46,7 +46,7 @@ int main(int argc, char const* const* argv)
 
     debug && printf("DEBUG: argc: %d and optind: %d\n", argc, optind);
     if (optind + 1 != argc) {
-      fprintf (stderr, "Usage: crange [-e] [-c] <range>\n\n");
+      fprintf (stderr, "Usage: crange [-c <configfile>] [-d] [-e] <range>\n\n");
       return 1;
     }
 
