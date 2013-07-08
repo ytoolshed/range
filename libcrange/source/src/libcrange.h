@@ -18,7 +18,7 @@ extern "C"
 
 /* These are almost certainly overridden at build time */
 #ifndef LIBCRANGE_CONF
- #define LIBCRANGE_CONF "/usr/local/etc/libcrange.conf"
+ #define LIBCRANGE_CONF "/etc/range.conf"
 #endif
 
 #ifndef DEFAULT_SQLITE_DB
