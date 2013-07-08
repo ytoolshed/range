@@ -429,7 +429,7 @@ range* range_from_function(range_request* rr,
     return ret;
 }
 
-/* true iif range **r has exactly expected_ranges elements before its null termination */
+/* true iff range **r has exactly expected_ranges elements before its null termination */
 int validate_range_args(range_request* rr, range** r, int expected_ranges) {
     int i=0;
     if (0 == expected_ranges && NULL == r[1]) {
