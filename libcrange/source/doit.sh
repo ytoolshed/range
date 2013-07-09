@@ -52,7 +52,9 @@ echo loadmodule $DESTDIR/usr/lib/libcrange/ip >>  $DESTDIR/etc/range.conf
 echo loadmodule $DESTDIR/usr/lib/libcrange/yst-ip-list >>  $DESTDIR/etc/range.conf 
 
 # Before perlmodules are loaded, set var for @INC
-echo perl_inc_path=$DESTDIR/usr/local/lib64/perl5:$DESTDIR/var/libcrange/perl >> $DESTDIR/etc/range.conf
+# $DESTDIR/usr/local/lib64/perl5 = RHEL6
+# $DESTDIR/usr/local/lib/perl/5.14.2 = ubuntu/travis
+echo perl_inc_path=$DESTDIR/usr/local/lib64/perl5:$DESTDIR/var/libcrange/perl:$DESTDIR/usr/local/lib/perl/5.14.2 >> $DESTDIR/etc/range.conf
 echo perlmodule LibrangeUtils >>  $DESTDIR/etc/range.conf
 echo perlmodule LibrangeAdminscf >> $DESTDIR/etc/range.conf
 
