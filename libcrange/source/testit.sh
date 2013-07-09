@@ -23,20 +23,20 @@ is(
   );
 
 is(
-  `crange  -c /home/eam/prefix/etc/range.conf -e  'vlan(foo1.example.com)'`,
+  `crange  -c $ENV{DESTDIR}/etc/range.conf -e  'vlan(foo1.example.com)'`,
   qq{"1.2.3.0/24"\n},
   "vlan(foo1.example.com)",
   );
 
 
 is(
-  `crange  -c /home/eam/prefix/etc/range.conf -e  '\@bar'`,
+  `crange  -c $ENV{DESTDIR}/etc/range.conf -e  '\@bar'`,
   qq{foo1.example.com\nfoo2.example.com\n},
   '@bar',
   );
 
 is(
-  `crange  -c /home/eam/prefix/etc/range.conf -e  'has(bar;foo1.example.com)'`,
+  `crange  -c $ENV{DESTDIR}/etc/range.conf -e  'has(bar;foo1.example.com)'`,
   qq{GROUPS\n},
   'has(bar;foo1.example.com) # should work',
   );
@@ -52,7 +52,7 @@ my @no_arg_funcs = qw(
 
 for my $func (@arg_needing_funcs) {
   is(
-    `crange  -c /home/eam/prefix/etc/range.conf -e '$func()'`,
+    `crange  -c $ENV{DESTDIR}/etc/range.conf -e '$func()'`,
     qq{},
     "$func() # should return empty",
     );
