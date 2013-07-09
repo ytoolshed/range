@@ -3,5 +3,5 @@ compiler:
   - gcc
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -qq libapr1 libapr1-dev flex libpcre3 libpcre3-dev sqlite3 libsqlite3-dev libsqlite3-0 libyaml libyaml-dev libyaml-syck-perl  
+  - sudo apt-get install -qq libapr1 libapr1-dev flex libpcre3 libpcre3-dev sqlite3 libsqlite3-dev libsqlite3-0 libyaml-0-2 libyaml-dev libyaml-syck-perl  
 script: cd libcrange/source && ./doit.sh 
