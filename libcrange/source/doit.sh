@@ -5,7 +5,7 @@ set -x
 export DESTDIR=$HOME/prefix
 
 rm -rf $DESTDIR || exit 1
-make clean || exit 1
+make clean # this can fail
 
 aclocal || exit 1
 libtoolize --force || exit 1
