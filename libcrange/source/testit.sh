@@ -15,7 +15,7 @@ is( `crange -e foo100..10|md5sum`,
     "foo100..10 # noconfig");
 
 is(
-   `crange  -c $ENV{DESTDIR}/etc/range.conf foo100..1 -e 2>&1 |md5sum`,
+   `crange  -c $ENV{DESTDIR}/etc/range.conf foo100..1 -e 2>&1`,
    qq{foo100\nfoo101\n},
    "foo100..1 # using range.conf",
   );
