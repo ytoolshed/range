@@ -1,0 +1,4 @@
+language: c
+compiler:
+  - gcc
+script: cd libcrange/source && ./doit.sh 
