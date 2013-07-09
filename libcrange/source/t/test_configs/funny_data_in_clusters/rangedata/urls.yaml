@@ -1,0 +1,10 @@
+---
+bare:
+- http://bare.example.com/
+
+dquote:
+- '"http://doublequotes.example.com/"'
+
+qfunc:
+- q(http://qfunc.example.com/)
+
