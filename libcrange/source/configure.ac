@@ -90,7 +90,6 @@ AC_CHECK_PERL
 AC_CHECK_PCRE
 AC_CHECK_APR
 
-AC_CHECK_LIB([crypt], [crypt_r], [], [exit 1])
 AC_CHECK_LIB([m], [sin], [], [exit 1])
 AC_CHECK_LIB([pthread], [pthread_create], [], [exit 1])
 AC_CHECK_LIB([z], [zlibVersion], [], [exit 1])
