@@ -3,14 +3,21 @@
 set -e
 set -x
 
-aclocal || exit 1
-libtoolize --force || exit 1
-autoheader || exit 1
-automake -a || exit 1
-autoconf || exit 1
-./configure --prefix=/usr || exit 1
-make || exit 1
-make install  || exit 1
+aclocal
+case "${OSTYPE}" in
+	darwin*)
+		glibtoolize --force
+		;;
+	*)
+		libtoolize --force
+		;;
+esac
+autoheader
+automake -a
+autoconf
+./configure --prefix=/usr
+make
+make install
 cd perl
-sh ./build || exit 1
+sh ./build
 
