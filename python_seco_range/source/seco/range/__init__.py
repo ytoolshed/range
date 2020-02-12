@@ -3,12 +3,12 @@ Library for querying the range webservice - http://github.com/ytoolshed/range
 ebourget@linkedin.com
 """
 
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import socket
 import sys
 import getpass
 
-__version__ = '1.2'
+__version__ = '2.0'
 
 class RangeException(Exception):
     def __init__(self, value):
@@ -36,14 +36,14 @@ class Range(object):
                 return self.split_collapse(expr)
 
         if ret_list:
-            url = 'http://%s/range/list?%s' % (self.host, urllib2.quote(expr))
+            url = 'http://%s/range/list?%s' % (self.host, urllib.parse.quote(expr))
         else:
-            url = 'http://%s/range/expand?%s' % (self.host, urllib2.quote(expr))
-        range_req = urllib2.Request(url, None, self.headers)
+            url = 'http://%s/range/expand?%s' % (self.host, urllib.parse.quote(expr))
+        range_req = urllib.request.Request(url, None, self.headers)
         req = None
         try:
-            req = urllib2.urlopen(range_req)
-        except urllib2.URLError, e:
+            req = urllib.request.urlopen(range_req)
+        except urllib.error.URLError as e:
             raise RangeException(e)
         try:
             code = req.getcode()
@@ -138,6 +138,6 @@ if __name__ == '__main__':
     try:
         r = Range("localhost:80")
     except RangeException as e:
-        print e
+        print(e)
         sys.exit(1)
-    print r.expand(sys.argv[1])
+    print(r.expand(sys.argv[1]))

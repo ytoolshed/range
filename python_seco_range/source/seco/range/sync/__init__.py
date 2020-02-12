@@ -107,7 +107,7 @@ def norm_values(rangedata):
   otherwise the yaml is not quite what we want
   """
   dumper = {}
-  for k, v in rangedata.items():
+  for k, v in list(rangedata.items()):
     if isinstance(v, (set,list,tuple)):
       new_list = []
       for item in v:
@@ -227,7 +227,7 @@ def write_range_file(cluster, output, outdir):
   if output:
     try:
       output = norm_values(output)
-    except AttributeError, e:
+    except AttributeError as e:
       log.error("Failed to normalize {0}: {1}".format(output, e))
   else:
     log.info("No output: {0}".format(cluster))
