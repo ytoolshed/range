@@ -107,7 +107,7 @@ def norm_values(rangedata):
   otherwise the yaml is not quite what we want
   """
   dumper = {}
-  for k, v in list(rangedata.items()):
+  for k, v in rangedata.items():
     if isinstance(v, (set,list,tuple)):
       new_list = []
       for item in v:
