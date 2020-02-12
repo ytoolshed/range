@@ -1,7 +1,7 @@
 default:
   name: python-seco-range
   arch: noarch
-  version: '1.0'
+  version: '2.0'
   requires:
     - GitPython
     - PyYAML
