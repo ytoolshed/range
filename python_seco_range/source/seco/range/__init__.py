@@ -3,7 +3,7 @@ Library for querying the range webservice - http://github.com/ytoolshed/range
 ebourget@linkedin.com
 """
 
-import urllib.request, urllib.error, urllib.parse
+import urllib
 import socket
 import sys
 import getpass
