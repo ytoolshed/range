@@ -3,7 +3,9 @@ Library for querying the range webservice - http://github.com/ytoolshed/range
 ebourget@linkedin.com
 """
 
-import urllib
+import urllib.parse
+import urllib.request
+import urllib.error
 import socket
 import sys
 import getpass
@@ -50,7 +52,7 @@ class Range(object):
             if code != 200:
                 raise RangeException("Got %d response code from %s" % (code, url))
             reqinfo = req.info()
-            exception = reqinfo.getheader('RangeException')
+            exception = reqinfo.get('RangeException')
             if exception:
                 raise RangeException(exception)
             if ret_list:
