@@ -38,9 +38,9 @@ class Range(object):
                 return self.split_collapse(expr)
 
         if ret_list:
-            url = 'http://%s/range/list?%s' % (self.host, urllib.parse.quote(expr))
+            url = f'http://{self.host}/range/list?{urllib.parse.quote(expr)}'
         else:
-            url = 'http://%s/range/expand?%s' % (self.host, urllib.parse.quote(expr))
+            url = f'http://{self.host}/range/expand?{urllib.parse.quote(expr)}'
         range_req = urllib.request.Request(url, None, self.headers)
         req = None
         try:
@@ -50,7 +50,7 @@ class Range(object):
         try:
             code = req.getcode()
             if code != 200:
-                raise RangeException("Got %d response code from %s" % (code, url))
+                raise RangeException(f"Got {code} response code from {url}"
             reqinfo = req.info()
             exception = reqinfo.get('RangeException')
             if exception:
@@ -134,7 +134,7 @@ class Range(object):
         myhost = socket.gethostname()
         me = getpass.getuser()
         myscript = provided_agent or sys.argv[0] or 'seco.range'
-        return '{0}/{1} ({2}; {3})'.format(myscript, __version__, me, myhost)
+        return f'{myscript}/{__version__} ({me}; {myhost})'
 
 if __name__ == '__main__':
     try:
