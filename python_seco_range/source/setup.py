@@ -1,8 +1,11 @@
 #!/usr/bin/python
 
-from distutils.core import setup
-setup(name='seco/range',
-      version = '1.0',
-      packages = [ 'seco', 'seco.range', 'seco.range.sync' ])
-      
-      
+import setuptools
+setuptools.setup(
+    name='seco/range',
+    version = '2.0',
+    url='https://github.com/xadrnd/range',
+    packages = setuptools.find_packages(),
+    python_requires='>=3.6'
+)
+

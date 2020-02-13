@@ -3,12 +3,15 @@ Library for querying the range webservice - http://github.com/ytoolshed/range
 ebourget@linkedin.com
 """
 
-import urllib2
+import urllib.parse
+import urllib.error
 import socket
 import sys
 import getpass
 
-__version__ = '1.2'
+import requests
+
+__version__ = '2.0'
 
 class RangeException(Exception):
     def __init__(self, value):
@@ -36,33 +39,29 @@ class Range(object):
                 return self.split_collapse(expr)
 
         if ret_list:
-            url = 'http://%s/range/list?%s' % (self.host, urllib2.quote(expr))
+            url = f'http://{self.host}/range/list?{urllib.parse.quote(expr)}'
         else:
-            url = 'http://%s/range/expand?%s' % (self.host, urllib2.quote(expr))
-        range_req = urllib2.Request(url, None, self.headers)
-        req = None
+            url = f'http://{self.host}/range/expand?{urllib.parse.quote(expr)}'
+
         try:
-            req = urllib2.urlopen(range_req)
-        except urllib2.URLError, e:
+            response = requests.get(url, headers=self.headers)
+        except requests.exceptions.ConnectionError as e:
             raise RangeException(e)
+
+        if response.status_code != 200:
+            raise RangeException(f"Got {response.status_code} response code from {url}")
         try:
-            code = req.getcode()
-            if code != 200:
-                raise RangeException("Got %d response code from %s" % (code, url))
-            reqinfo = req.info()
-            exception = reqinfo.getheader('RangeException')
-            if exception:
-                raise RangeException(exception)
+            exception = response.headers['RangeException']
+            raise RangeException(exception)
+        except KeyError:
             if ret_list:
                 expansion = []
-                for line in req.readlines():
+                for line in response.text.splitlines():
                     expansion.append(line.rstrip())
                 expansion.sort()
                 return expansion
             else:
-                return req.read()
-        finally:
-            req.close()
+                return response.text
 
     def collapse(self, expr):
         '''
@@ -132,12 +131,12 @@ class Range(object):
         myhost = socket.gethostname()
         me = getpass.getuser()
         myscript = provided_agent or sys.argv[0] or 'seco.range'
-        return '{0}/{1} ({2}; {3})'.format(myscript, __version__, me, myhost)
+        return f'{myscript}/{__version__} ({me}; {myhost})'
 
 if __name__ == '__main__':
     try:
         r = Range("localhost:80")
     except RangeException as e:
-        print e
+        print(e)
         sys.exit(1)
-    print r.expand(sys.argv[1])
+    print(r.expand(sys.argv[1]))

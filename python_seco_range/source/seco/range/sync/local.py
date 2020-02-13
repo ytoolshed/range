@@ -28,7 +28,7 @@ def sync(args):
         cluster_name = match.group(1)
         try:
           range_data[cluster_name] = yaml.load(open(os.path.join(local_dir, rfile)))
-        except (OSError, IOError), e:
+        except (OSError, IOError) as e:
           sys.stderr.write("Could not read local file: %s\n" % e)
 
   return range_data
