@@ -4,11 +4,12 @@ ebourget@linkedin.com
 """
 
 import urllib.parse
-import urllib.request
 import urllib.error
 import socket
 import sys
 import getpass
+
+import requests
 
 __version__ = '2.0'
 
@@ -41,30 +42,26 @@ class Range(object):
             url = f'http://{self.host}/range/list?{urllib.parse.quote(expr)}'
         else:
             url = f'http://{self.host}/range/expand?{urllib.parse.quote(expr)}'
-        range_req = urllib.request.Request(url, None, self.headers)
-        req = None
+
         try:
-            req = urllib.request.urlopen(range_req)
+            response = requests.get(url, headers=self.headers)
         except urllib.error.URLError as e:
             raise RangeException(e)
+
+        if response.status_code != 200:
+            raise RangeException(f"Got {response.status_code} response code from {url}")
         try:
-            code = req.getcode()
-            if code != 200:
-                raise RangeException(f"Got {code} response code from {url}"
-            reqinfo = req.info()
-            exception = reqinfo.get('RangeException')
-            if exception:
-                raise RangeException(exception)
+            exception = response.headers['RangeException']
+            raise RangeException(exception)
+        except KeyError:
             if ret_list:
                 expansion = []
-                for line in req.readlines():
+                for line in response.text.splitlines():
                     expansion.append(line.rstrip())
                 expansion.sort()
                 return expansion
             else:
-                return req.read()
-        finally:
-            req.close()
+                return response.text
 
     def collapse(self, expr):
         '''
