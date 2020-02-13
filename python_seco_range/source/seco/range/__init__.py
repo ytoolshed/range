@@ -45,7 +45,7 @@ class Range(object):
 
         try:
             response = requests.get(url, headers=self.headers)
-        except urllib.error.URLError as e:
+        except requests.exceptions.ConnectionError as e:
             raise RangeException(e)
 
         if response.status_code != 200:
