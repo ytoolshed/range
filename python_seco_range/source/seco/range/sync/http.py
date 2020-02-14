@@ -1,6 +1,8 @@
 """
 A range sync plugin to download all the files from a remote URL
 """
+from __future__ import print_function
+
 # Core libs
 import os
 import re
@@ -17,25 +19,25 @@ def sync(args, debug=False):
   import seco.range.sync.local as local_sync
 
   url = args['url']
-  if debug: print "URL is %s" % url
+  if debug: print("URL is %s" % url)
   file_re = re.compile(args['filter'])
-  if debug: print "Filter is %s" % file_re
+  if debug: print("Filter is %s" % file_re)
   req = requests.get(url)
-  if debug: print "Request made"
+  if debug: print("Request made")
   content = BeautifulSoup(req.content)
-  if debug: print "Request parsed"
+  if debug: print("Request parsed")
 
   content_links = content.findAll('a')
 
   files = set()
   for link in content_links:
-    if debug: print "Inspecting %s" % link
+    if debug: print("Inspecting %s" % link)
     if file_re.search(link['href']):
-      if debug: print "Found match: %s" % link['href']
+      if debug: print("Found match: %s" % link['href'])
       files.add(link['href'])
 
 
-  if debug: print "Have files %s" % (', '.join(files))
+  if debug: print("Have files %s" % (', '.join(files)))
   try:
     tmpdir = tempfile.mkdtemp(prefix='range_sync_http-')
     for f in files:
@@ -51,7 +53,7 @@ def sync(args, debug=False):
   finally:
     if tmpdir and os.path.exists(tmpdir):
       if debug:
-        print "Look in %s" % tmpdir
+        print("Look in %s" % tmpdir)
       else:
         shutil.rmtree(tmpdir)
 

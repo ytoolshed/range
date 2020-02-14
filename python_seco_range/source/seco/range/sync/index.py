@@ -2,6 +2,8 @@
 Various core functions for dealing with merging and normalizing data that will
 be added to range
 """
+from __future__ import print_function
+
 # Core
 
 # 3rd party
@@ -18,7 +20,7 @@ def sync(config):
     try:
       values = range.expand("%" + cluster)
     except seco.range.RangeException:
-      print "Could not lookup up {0}".format(cluster)
+      print("Could not lookup up {0}".format(cluster))
     if values:
       for v in values:
         #print "Adding {0} to {1}".format(cluster, v)
