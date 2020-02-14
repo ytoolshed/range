@@ -1,4 +1,4 @@
-# Usage
+### Usage
 
     $ python3
     Python 3.6.8 (default, Aug  7 2019, 17:28:10) 
@@ -10,4 +10,3 @@
     >>> range_session = seco.range.Range(host='localhost')
     >>> range_session.expand('%{mycluster}:STABLE')
     ['hostname1', 'hostname2']
-    
