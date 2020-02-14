@@ -1,18 +1,13 @@
-# How to build
-
-Install and update setuptools and wheel
-
-    python3 -m pip install --upgrade setuptools wheel
-
-Run setup.py to build the package
-
-    python3 setup.py sdist bdist_wheel
-
-dist/ contains the package as a built distribution and tar.gz
-
-    python3 -m twine upload dist/*
-
 # Usage
 
-    import seco.range
-
+    $ python3
+    Python 3.6.8 (default, Aug  7 2019, 17:28:10) 
+    [GCC 4.8.5 20150623 (Red Hat 4.8.5-39)] on linux
+    Type "help", "copyright", "credits" or "license" for more information.
+    >>> 
+    >>> import seco.range
+    >>> 
+    >>> range_session = seco.range.Range(host='localhost')
+    >>> range_session.expand('%{mycluster}:STABLE')
+    ['hostname1', 'hostname2']
+    
