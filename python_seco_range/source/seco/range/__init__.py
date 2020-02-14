@@ -3,15 +3,15 @@ Library for querying the range webservice - http://github.com/ytoolshed/range
 ebourget@linkedin.com
 """
 
+# Core
 import urllib.parse
 import urllib.error
 import socket
 import sys
 import getpass
 
+# 3rd Party
 import requests
-
-__version__ = '2.0'
 
 class RangeException(Exception):
     def __init__(self, value):
